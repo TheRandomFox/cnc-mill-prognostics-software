@@ -1,0 +1,95 @@
+"""
+title: Milling machine prognostics program
+author: Abdul Halim bin Slamat
+std no.: 9664005
+cohort: FT/CS119
+"""
+
+#import packages
+from sys import exit
+from scipy.io import loadmat
+
+#read file; extract contents of 'mill' key and unused flat dimension
+#original format == dict, read from MATLAB array
+#new format == numpy array
+try:
+    milldat = loadmat('mill.mat')
+    milldat = milldat['mill'][0]
+except:
+    exit('Error: No file detected.')
+
+
+#exploring data
+""" milldat structure
+
+milldat[x][y][z]:
+x = experiment index, len==167 (each case done multiple times, varying by duration)
+y = field index, len==13
+z = experiment data index for y=7:12, len==9000; for y=0:6, len==1
+
+field legend:
+0 = case            type of experiment being run; defines DOC, feed & material
+1 = run             no. of experiment runs in each case
+2 = VB              flank wear, mm (dist from cutting edge to abrasive wear on flank of tool)
+3 = time            duration, s
+4 = DOC             depth of cut, mm
+5 = feed            rate of traversal thru material, mm/min
+6 = material        material being cut (1=cast iron, 2=steel)
+7 = smcAC           spindle motor current AC, Amp
+8 = smcDC           spindle motor current DC, Amp
+9 = vib_table       Table vibration, kHz
+10 = vib_spindle    Spindle vibration, kHz
+11 = AE_table       Acoustic emission at table, kHz
+12 = AE_spindle     Acoustic emission at spindle, kHz
+"""
+#xyz coords for milldat access
+#x, y, z = 0, 0, 0
+
+
+#select features to use
+#current:    feats_curr = case, vb, time, smcac, smcdc
+#vibration:  feats_vib = case, vb, time, vib_table, vib_spindle
+#acoustic:   feats_ae = case, vb, time,  ae_table, ae_spindle
+
+#for each experiment run, separate by case and append to relevant feats array
+feats_curr_iron = []
+fets_curr_steel = []
+curr = []
+for x in range(len(milldat)):
+    if milldat[x][6][0] == 1
+    curr.append(case[i])                    #case
+    curr.append(milldat[x][2][0])           #vb
+    curr.append(milldat[x][3][0])           #time
+    curr.append(milldat[x][7].flatten() )   #smcac
+    curr.append(milldat[x][8].flatten() )   #smcdc
+    feats_curr.append(curr)
+    curr = []   #reset curr
+
+
+
+# feats_vib = []
+
+# feats_ae = []
+
+
+#input features
+
+
+#output features
+
+
+#divide data sets into training & testing groups
+
+
+#visualise data
+
+#train algorithm
+#alg used:
+
+
+#print training result
+#print('X-intercept: ', reg.intercept_)
+#print('Coefficient: ', reg.coef_)
+
+
+#Root mean squared error
