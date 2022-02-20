@@ -43,6 +43,10 @@ field legend:
 10 = vib_spindle    Spindle vibration, kHz
 11 = AE_table       Acoustic emission at table, kHz
 12 = AE_spindle     Acoustic emission at spindle, kHz
+
+Note:
+    According to the dataset readme, for some of the experiments t or VB are empty because they were not measured.
+    The program will ignore these cases.
 """
 
 #select features to use
@@ -61,17 +65,17 @@ feats_ae_steel = []
 feats = []
 for i in range(3):
     for x in range(len(milldat)):
-        feats.append(milldat[x][4][0])           #DOC
-        feats.append(milldat[x][5][0])           #feed
-        feats.append(milldat[x][2][0])           #vb
-        feats.append(milldat[x][3][0])           #time
+        feats.append(milldat[x][4][0])      #DOC
+        feats.append(milldat[x][5][0])      #feed
+        feats.append(milldat[x][2][0])      #vb
+        feats.append(milldat[x][3][0])      #time
 
         if i == 0:      #current feats
             feats.append(milldat[x][7].flatten())   #smcAC
             feats.append(milldat[x][8].flatten())   #smcDC
-            if milldat[x][6][0] == 1:   #material == castiron
+            if milldat[x][6][0] == 1:               #material == castiron
                 feats_curr_iron.append(feats)
-            else:                       #material == steel
+            else:                                   #material == steel
                 feats_curr_steel.append(feats)
 
         elif i == 1:    #vib feats
@@ -97,8 +101,8 @@ for i in range(3):
 
 #output features
 '''
-rate of wear = dVB/dt
-
+Y-axis: rate of wear = dVB/dt
+X-axis: feed,
 remaining useful life => not obtainable. insufficient information.
 '''
 
