@@ -102,10 +102,29 @@ for i in range(3):
 
 
 #output features
+#remaining useful life => not obtainable. insufficient information.
 '''
-Y-axis: rate of wear = dVB/dt
-X-axis: feed,
-remaining useful life => not obtainable. insufficient information.
+Table A:
+    X-axis: rate of wear = dVB/dt
+    Y-axis: rate of traversal = DOC/t
+'''
+
+'''
+Table B:
+    X-axis: rate of wear = dVB/dt
+    Y-axis: motor current = smcAC, smcDC
+'''
+
+'''
+Table C:
+    X-axis: rate of wear = dVB/dt
+    Y-axis: equipment vibration = vib_table, vib_spindle
+'''
+
+'''
+Table D:
+    X-axis: rate of wear = dVB/dt
+    Y-axis: noise emission = ae_table, ae_spindle
 '''
 
 #divide data sets into training & testing groups
