@@ -4,7 +4,7 @@ author: Abdul Halim bin Slamat
 std no.: 9664005
 cohort: FT/CS119
 
-#Original dataset & report can be acquired at: https://ti.arc.nasa.gov/c/4/
+Original dataset & report can be acquired at: https://ti.arc.nasa.gov/c/4/
 """
 
 #import packages
@@ -58,39 +58,39 @@ feats_vib_steel = []
 feats_ae_iron = []
 feats_ae_steel = []
 
-curr = []
+feats = []
 for i in range(3):
     for x in range(len(milldat)):
-        curr.append(milldat[x][4][0])           #DOC
-        curr.append(milldat[x][5][0])           #feed
-        curr.append(milldat[x][2][0])           #vb
-        curr.append(milldat[x][3][0])           #time
+        feats.append(milldat[x][4][0])           #DOC
+        feats.append(milldat[x][5][0])           #feed
+        feats.append(milldat[x][2][0])           #vb
+        feats.append(milldat[x][3][0])           #time
 
         if i == 0:      #current feats
-            curr.append(milldat[x][7].flatten())   #smcAC
-            curr.append(milldat[x][8].flatten())   #smcDC
+            feats.append(milldat[x][7].flatten())   #smcAC
+            feats.append(milldat[x][8].flatten())   #smcDC
             if milldat[x][6][0] == 1:   #material == castiron
-                feats_curr_iron.append(curr)
+                feats_curr_iron.append(feats)
             else:                       #material == steel
-                feats_curr_steel.append(curr)
+                feats_curr_steel.append(feats)
 
         elif i == 1:    #vib feats
-            curr.append(milldat[x][9].flatten())   #vib_table
-            curr.append(milldat[x][10].flatten())  #vib_spindle
+            feats.append(milldat[x][9].flatten())   #vib_table
+            feats.append(milldat[x][10].flatten())  #vib_spindle
             if milldat[x][6][0] == 1:
-                feats_vib_iron.append(curr)
+                feats_vib_iron.append(feats)
             else:
-                feats_vib_steel.append(curr)
+                feats_vib_steel.append(feats)
 
         else:           #ae feats
-            curr.append(milldat[x][11].flatten() )   #ae_table
-            curr.append(milldat[x][12].flatten() )   #ae_spindle
+            feats.append(milldat[x][11].flatten() )   #ae_table
+            feats.append(milldat[x][12].flatten() )   #ae_spindle
             if milldat[x][6][0] == 1:
-                feats_ae_iron.append(curr)
+                feats_ae_iron.append(feats)
             else:
-                feats_ae_steel.append(curr)
+                feats_ae_steel.append(feats)
 
-        curr = []   #reset curr
+        feats = []   #reset feats
 
 #input features
 
