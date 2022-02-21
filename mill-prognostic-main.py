@@ -14,8 +14,8 @@ from scipy.io import loadmat
 #import matplotlib
 
 #read file; extract contents of 'mill' key and unused flat dimension
-#original format == dict, read from MATLAB array
-#new format == numpy array
+#original format == dict, from MATLAB array
+#reformat to numpy array
 try:
     milldat = loadmat('mill.mat')
     milldat = milldat['mill'][0]
@@ -23,9 +23,9 @@ except:
     exit("Error: 'Mill.mat' either does not exist or could not be read.")
 
 #select features to use
-#current:    feats_curr = DOC, feed, material, vb, time, smcac, smcdc
-#vibration:  feats_vib = DOC, feed, material, vb, time, vib_table, vib_spindle
-#acoustic:   feats_ae = DOC, feed, material, vb, time,  ae_table, ae_spindle
+#current:    feats_curr = feed, material, vb, time, smcac, smcdc
+#vibration:  feats_vib = feed, material, vb, time, vib_table, vib_spindle
+#acoustic:   feats_ae = feed, material, vb, time,  ae_table, ae_spindle
 
 #for each experiment run, separate by material and append to relevant feats array
 feats_curr_iron = []
@@ -41,7 +41,6 @@ for i in range(3):
         if milldat[x][2][0] > 0 and milldat[x][3][0] > 0:    #if contains valid values for time and VB; else skip.
             feats.append(milldat[x][2][0])      #vb
             feats.append(milldat[x][3][0])      #time
-            feats.append(milldat[x][4][0])      #DOC
             feats.append(milldat[x][5][0])      #feed
 
             if i == 0:      #current feats
