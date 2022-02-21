@@ -20,7 +20,7 @@ try:
     milldat = loadmat('mill.mat')
     milldat = milldat['mill'][0]
 except:
-    exit('Error: No file detected.')
+    exit("Error: 'Mill.mat' either does not exist or could not be read.")
 
 #exploring data
 """ milldat structure
