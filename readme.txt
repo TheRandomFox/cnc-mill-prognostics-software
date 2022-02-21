@@ -7,9 +7,13 @@ cohort: 	FT/CS119
 Original dataset & report can be acquired at: https://ti.arc.nasa.gov/c/4/
 Credit: A. Agogino and K. Goebel (2007). BEST lab, UC Berkeley.
 
-# read mill.mat file; extract contents of 'mill' key and unused flat dimension
-# original format == dict, read from MATLAB array
-# new format == numpy array
+****************************************
+
+Attempt to read mill.mat file; extract contents of 'mill' key and unused flat dimension
+Original format == dict, read from MATLAB array
+New format == numpy array
+
+
 
 # milldat structure
 milldat[x][y][z]:
@@ -31,3 +35,7 @@ field legend:
 10 = vib_spindle    Spindle vibration, kHz
 11 = AE_table       Acoustic emission at table, kHz
 12 = AE_spindle     Acoustic emission at spindle, kHz
+
+Note:
+    According to the dataset readme, for some of the experiments t or VB are empty because they were not measured.
+    The program will ignore these cases.
