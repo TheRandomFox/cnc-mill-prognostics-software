@@ -13,6 +13,7 @@ from sys import exit
 from scipy.io import loadmat
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 
 #read file; extract contents of 'mill' key and unused flat dimension
 #original format == dict, from MATLAB array
@@ -23,8 +24,35 @@ try:
 except:
     exit("Error: 'Mill.mat' either does not exist or could not be read.")
 
-#extract data to be used into individual cases.
+#identify fields and store label names
+fields = milldat.dtype.names
+print('List of field names:\n', fields, '\n')
 
+#new Pandas dataframe
+df_mill = pd.DataFrame()
+
+#extract label data into df_mill (not sensor data)
+#reshape table
+#x-axis: fields; y-axis: data values
+for y in range(7):
+    #set/reset temp container
+    dat = []
+    for x in range(len(milldat)):
+        if milldat[x][2][0] > 0:        #if contains valid value for VB; else skip
+            dat.append(milldat[x][y][0][0])
+    #make dat a numpy array
+    dat = np.array(dat)
+    #insert into df_mill
+    df_mill[y] = dat
+
+#set column labels
+df_mill.columns = fields[0:7]
+
+#visualise dataframe table
+print(df_mill)
+
+
+'''
 case1 = []; case2 = []; case3 = []; case4 = []; case5 = []; case6 = []; case7 = []; case8 = []
 case9 = []; case10 = []; case11 = []; case12 = []; case13 = []; case14 = []; case15 = []; case16 = []
 
@@ -69,10 +97,7 @@ for x in range(len(milldat)):
         else:
             case16.append(case)
         case = []   #reset case
-
-#get mean and standard deviation for sensor data for each run
-
-
+'''
 #input features
 
 #output features
@@ -94,6 +119,7 @@ Table D:
     X-axis: rate of wear = dVB/dt
     Y-axis: noise emission = ae_table, ae_spindle
 '''
+
 
 #divide data sets into training & testing groups
 
