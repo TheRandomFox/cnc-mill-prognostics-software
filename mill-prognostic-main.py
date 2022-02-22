@@ -12,7 +12,7 @@ Credit: K.Goebel & A.Agogino
 from sys import exit
 from scipy.io import loadmat
 import numpy as np
-import matplotlib
+import matplotlib.pyplot as plt
 
 #read file; extract contents of 'mill' key and unused flat dimension
 #original format == dict, from MATLAB array
@@ -23,12 +23,7 @@ try:
 except:
     exit("Error: 'Mill.mat' either does not exist or could not be read.")
 
-#select features to use
-#current:    feats_curr = wearRate, feed, material, vb, time, smcac, smcdc
-#vibration:  feats_vib = wearRate, feed, material, vb, time, vib_table, vib_spindle
-#acoustic:   feats_ae = wearRate, feed, material, vb, time,  ae_table, ae_spindle
-
-#extract into individual feats. Separate by material. flatten.
+#extract data to be used into individual feats. Separate by material. flatten.
 
 #xxx1 == cast iron; xxx2 == steel
 time1 = []
@@ -53,9 +48,9 @@ aespindle2 = []
 for x in range(len(milldat)):
     if milldat[x][2][0] > 0 and milldat[x][3][0] > 0:    #if contains valid values for VB and time; else skip.
         if milldat[x][6][0] == 1:       #material == castiron
-            time1.append(milldat[x][3])
-            feed1.append(milldat[x][5])
-            wearRate1.append(milldat[x][2] / milldat[x][3])      #VB/time (mm/s)
+            time1.append(milldat[x][3][0][0])
+            feed1.append(milldat[x][5][0][0])
+            wearRate1.append(milldat[x][2][0][0] / milldat[x][3][0][0])      #VB/time (mm/s)
             smcac1.append(milldat[x][7].flatten())
             smcdc1.append(milldat[x][8].flatten())
             vibtable1.append(milldat[x][9].flatten())
@@ -63,9 +58,9 @@ for x in range(len(milldat)):
             aetable1.append(milldat[x][11].flatten())
             aespindle1.append(milldat[x][12].flatten())
         else:       #material == steel
-            time2.append(milldat[x][3])
-            feed2.append(milldat[x][5])
-            wearRate2.append(milldat[x][2] / milldat[x][3])
+            time2.append(milldat[x][3][0][0])
+            feed2.append(milldat[x][5][0][0])
+            wearRate2.append(milldat[x][2][0][0] / milldat[x][3][0][0])
             smcac2.append(milldat[x][7].flatten())
             smcdc2.append(milldat[x][8].flatten())
             vibtable2.append(milldat[x][9].flatten())
@@ -73,43 +68,9 @@ for x in range(len(milldat)):
             aetable2.append(milldat[x][11].flatten())
             aespindle2.append(milldat[x][12].flatten())
 
+#get mean and standard deviation for sensor data for each run
 
-'''
-    for x in range(len(milldat)):
-        if milldat[x][2][0] > 0 and milldat[x][3][0] > 0:    #if contains valid values for VB and time; else skip.
-            wearRate = milldat[x][2][0] / milldat[x][3][0]      #VB/time (mm/s)
-            feats.append(wearRate)
-            feats.append(milldat[x][3][0])      #time
-            feats.append(milldat[x][5][0])      #feed
-            if i == 0:      #current feats
-                feats.append(milldat[x][7].flatten())   #smcAC
-                feats.append(milldat[x][8].flatten())   #smcDC
-                if milldat[x][6][0] == 1:               #material == castiron
-                    feats_curr_iron.append(feats)
-                else:                                   #material == steel
-                    feats_curr_steel.append(feats)
 
-            elif i == 1:    #vib feats
-                feats.append(milldat[x][9].flatten())   #vib_table
-                feats.append(milldat[x][10].flatten())  #vib_spindle
-                if milldat[x][6][0] == 1:
-                    feats_vib_iron.append(feats)
-                else:
-                    feats_vib_steel.append(feats)
-
-            else:           #ae feats
-                feats.append(milldat[x][11].flatten() )   #ae_table
-                feats.append(milldat[x][12].flatten() )   #ae_spindle
-                if milldat[x][6][0] == 1:
-                    feats_ae_iron.append(feats)
-                else:
-                    feats_ae_steel.append(feats)
-
-            feats = []   #reset feats
-'''
-#plotx =
-#ploty =
-#plot()
 #input features
 
 #output features
@@ -118,21 +79,15 @@ for x in range(len(milldat)):
 Table A:
     X-axis: rate of wear = dVB/dt
     Y-axis: rate of traversal = DOC/t
-'''
 
-'''
 Table B:
     X-axis: rate of wear = dVB/dt
     Y-axis: motor current = smcAC, smcDC
-'''
 
-'''
 Table C:
     X-axis: rate of wear = dVB/dt
     Y-axis: equipment vibration = vib_table, vib_spindle
-'''
 
-'''
 Table D:
     X-axis: rate of wear = dVB/dt
     Y-axis: noise emission = ae_table, ae_spindle
@@ -142,6 +97,7 @@ Table D:
 
 
 #visualise data
+#plt.plot(time1[0], vibspindle1[0], '.-b')
 
 #train algorithm
 #alg used:
