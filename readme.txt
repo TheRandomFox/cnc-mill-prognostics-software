@@ -11,15 +11,14 @@ Credit: A. Agogino and K. Goebel (2007). BEST lab, UC Berkeley.
 
 ****************************************
 
-Read mill.mat file; extract contents of 'mill' key and unused flat dimension
+Reads mill.mat file
 Original format == dict, read from MATLAB array
-New format == numpy array
-
+Convert into Pandas dataframe
 
 
 ##### milldat structure #####
 milldat[x][y][z][0]:
-x = experiment index, len==167 (each case done multiple times, varying by duration)
+x = experiment index, len==167 (each case measured multiple times as duration progresses)
 y = field index, len==13
 z = sensor data index for y=7:12, len==9000; for y=0:6, len==1
 [0] = for some reason each individual value in each list is in a (1,) array; Must use a 4th dimension to extract the values.
