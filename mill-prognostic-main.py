@@ -28,41 +28,47 @@ except:
 case1 = []; case2 = []; case3 = []; case4 = []; case5 = []; case6 = []; case7 = []; case8 = []
 case9 = []; case10 = []; case11 = []; case12 = []; case13 = []; case14 = []; case15 = []; case16 = []
 
+case = []
 for x in range(len(milldat)):
     if milldat[x][2][0] > 0:    #if contains valid values for VB; else skip.
-        for y in range(12):
-            if milldat[x][0] == 1:
-                case1.append(milldat[x][y+1])
-            elif milldat[x][0] == 2:
-                case2.append(milldat[x][y+1])
-            elif milldat[x][0] == 3:
-                case3.append(milldat[x][y+1])
-            elif milldat[x][0] == 4:
-                case4.append(milldat[x][y+1])
-            elif milldat[x][0] == 5:
-                case5.append(milldat[x][y+1])
-            elif milldat[x][0] == 6:
-                case6.append(milldat[x][y+1])
-            elif milldat[x][0] == 7:
-                case7.append(milldat[x][y+1])
-            elif milldat[x][0] == 8:
-                case8.append(milldat[x][y+1])
-            elif milldat[x][0] == 9:
-                case9.append(milldat[x][y+1])
-            elif milldat[x][0] == 10:
-                case10.append(milldat[x][y+1])
-            elif milldat[x][0] == 11:
-                case11.append(milldat[x][y+1])
-            elif milldat[x][0] == 12:
-                case12.append(milldat[x][y+1])
-            elif milldat[x][0] == 13:
-                case13.append(milldat[x][y+1])
-            elif milldat[x][0] == 14:
-                case14.append(milldat[x][y+1])
-            elif milldat[x][0] == 15:
-                case15.append(milldat[x][y+1])
+        for y in range(1,13):
+            if y >= 7:
+                case.append(milldat[x][y])
             else:
-                case16.append(milldat[x][y+1])
+                case.append(milldat[x][y][0][0])
+        if milldat[x][0] == 1:
+            case1.append(case)
+        elif milldat[x][0] == 2:
+            case2.append(case)
+        elif milldat[x][0] == 3:
+            case3.append(case)
+        elif milldat[x][0] == 4:
+            case4.append(case)
+        elif milldat[x][0] == 5:
+            case5.append(case)
+        elif milldat[x][0] == 6:
+            case6.append(case)
+        elif milldat[x][0] == 7:
+            case7.append(case)
+        elif milldat[x][0] == 8:
+            case8.append(case)
+        elif milldat[x][0] == 9:
+            case9.append(case)
+        elif milldat[x][0] == 10:
+            case10.append(case)
+        elif milldat[x][0] == 11:
+            case11.append(case)
+        elif milldat[x][0] == 12:
+            case12.append(case)
+        elif milldat[x][0] == 13:
+            case13.append(case)
+        elif milldat[x][0] == 14:
+            case14.append(case)
+        elif milldat[x][0] == 15:
+            case15.append(case)
+        else:
+            case16.append(case)
+        case = []   #reset case
 
 #get mean and standard deviation for sensor data for each run
 
