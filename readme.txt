@@ -2,6 +2,8 @@ title: 		Milling machine prognostics program
 author: 	Abdul Halim bin Slamat
 std no.: 	9664005
 cohort: 	FT/CS119
+
+repo:		https://github.com/TheRandomFox/cnc-mill-prognostics-software
 ****************************************
 
 Original dataset & report can be acquired at: https://ti.arc.nasa.gov/c/4/
