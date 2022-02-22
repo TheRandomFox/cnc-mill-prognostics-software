@@ -23,50 +23,46 @@ try:
 except:
     exit("Error: 'Mill.mat' either does not exist or could not be read.")
 
-#extract data to be used into individual feats. Separate by material. flatten.
+#extract data to be used into individual cases.
 
-#xxx1 == cast iron; xxx2 == steel
-time1 = []
-feed1 = []
-wearRate1 = []
-smcac1 = []
-smcdc1 = []
-vibtable1 = []
-vibspindle1 = []
-aetable1 = []
-aespindle1 = []
-time2 = []
-feed2 = []
-wearRate2 = []
-smcac2 = []
-smcdc2 = []
-vibtable2 = []
-vibspindle2 = []
-aetable2 = []
-aespindle2 = []
+case1 = []; case2 = []; case3 = []; case4 = []; case5 = []; case6 = []; case7 = []; case8 = []
+case9 = []; case10 = []; case11 = []; case12 = []; case13 = []; case14 = []; case15 = []; case16 = []
 
 for x in range(len(milldat)):
-    if milldat[x][2][0] > 0 and milldat[x][3][0] > 0:    #if contains valid values for VB and time; else skip.
-        if milldat[x][6][0] == 1:       #material == castiron
-            time1.append(milldat[x][3][0][0])
-            feed1.append(milldat[x][5][0][0])
-            wearRate1.append(milldat[x][2][0][0] / milldat[x][3][0][0])      #VB/time (mm/s)
-            smcac1.append(milldat[x][7].flatten())
-            smcdc1.append(milldat[x][8].flatten())
-            vibtable1.append(milldat[x][9].flatten())
-            vibspindle1.append(milldat[x][10].flatten())
-            aetable1.append(milldat[x][11].flatten())
-            aespindle1.append(milldat[x][12].flatten())
-        else:       #material == steel
-            time2.append(milldat[x][3][0][0])
-            feed2.append(milldat[x][5][0][0])
-            wearRate2.append(milldat[x][2][0][0] / milldat[x][3][0][0])
-            smcac2.append(milldat[x][7].flatten())
-            smcdc2.append(milldat[x][8].flatten())
-            vibtable2.append(milldat[x][9].flatten())
-            vibspindle2.append(milldat[x][10].flatten())
-            aetable2.append(milldat[x][11].flatten())
-            aespindle2.append(milldat[x][12].flatten())
+    if milldat[x][2][0] > 0:    #if contains valid values for VB; else skip.
+        for y in range(12):
+            if milldat[x][0] == 1:
+                case1.append(milldat[x][y+1])
+            elif milldat[x][0] == 2:
+                case2.append(milldat[x][y+1])
+            elif milldat[x][0] == 3:
+                case3.append(milldat[x][y+1])
+            elif milldat[x][0] == 4:
+                case4.append(milldat[x][y+1])
+            elif milldat[x][0] == 5:
+                case5.append(milldat[x][y+1])
+            elif milldat[x][0] == 6:
+                case6.append(milldat[x][y+1])
+            elif milldat[x][0] == 7:
+                case7.append(milldat[x][y+1])
+            elif milldat[x][0] == 8:
+                case8.append(milldat[x][y+1])
+            elif milldat[x][0] == 9:
+                case9.append(milldat[x][y+1])
+            elif milldat[x][0] == 10:
+                case10.append(milldat[x][y+1])
+            elif milldat[x][0] == 11:
+                case11.append(milldat[x][y+1])
+            elif milldat[x][0] == 12:
+                case12.append(milldat[x][y+1])
+            elif milldat[x][0] == 13:
+                case13.append(milldat[x][y+1])
+            elif milldat[x][0] == 14:
+                case14.append(milldat[x][y+1])
+            elif milldat[x][0] == 15:
+                case15.append(milldat[x][y+1])
+            else:
+                case16.append(milldat[x][y+1])
 
 #get mean and standard deviation for sensor data for each run
 
@@ -97,7 +93,7 @@ Table D:
 
 
 #visualise data
-#plt.plot(time1[0], vibspindle1[0], '.-b')
+
 
 #train algorithm
 #alg used:
