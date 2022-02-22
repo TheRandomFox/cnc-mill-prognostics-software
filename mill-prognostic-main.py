@@ -38,66 +38,29 @@ for y in range(7):
     #set/reset temp container
     dat = []
     for x in range(len(milldat)):
-        if milldat[x][2][0] > 0:        #if contains valid value for VB; else skip
-            dat.append(milldat[x][y][0][0])
-    #make dat a numpy array
+        dat.append(milldat[x][y][0][0])
+    #make contents of dat a numpy array
     dat = np.array(dat)
     #insert into df_mill
     df_mill[y] = dat
 
-#set column labels
+#set row & column labels
+df_mill.index = range(len(milldat))
 df_mill.columns = fields[0:7]
 
 #visualise dataframe table
 print(df_mill)
 
+#plot graph of VB/t for case 1
+cs1_vb = []; cs1_t = []
+for cn in range(0,12):
+    dat = []
+    cs1_vb.append(df_mill.at[cn,'VB'])
+    cs1_t.append(df_mill.at[cn,'time'])
+plt.plot(cs1_t, cs1_vb, '-')
+plt.xlabel('Time (s)')
+plt.ylabel('Tool wear (mm)')
 
-'''
-case1 = []; case2 = []; case3 = []; case4 = []; case5 = []; case6 = []; case7 = []; case8 = []
-case9 = []; case10 = []; case11 = []; case12 = []; case13 = []; case14 = []; case15 = []; case16 = []
-
-case = []
-for x in range(len(milldat)):
-    if milldat[x][2][0] > 0:    #if contains valid values for VB; else skip.
-        for y in range(1,13):
-            if y >= 7:
-                case.append(milldat[x][y])
-            else:
-                case.append(milldat[x][y][0][0])
-        if milldat[x][0] == 1:
-            case1.append(case)
-        elif milldat[x][0] == 2:
-            case2.append(case)
-        elif milldat[x][0] == 3:
-            case3.append(case)
-        elif milldat[x][0] == 4:
-            case4.append(case)
-        elif milldat[x][0] == 5:
-            case5.append(case)
-        elif milldat[x][0] == 6:
-            case6.append(case)
-        elif milldat[x][0] == 7:
-            case7.append(case)
-        elif milldat[x][0] == 8:
-            case8.append(case)
-        elif milldat[x][0] == 9:
-            case9.append(case)
-        elif milldat[x][0] == 10:
-            case10.append(case)
-        elif milldat[x][0] == 11:
-            case11.append(case)
-        elif milldat[x][0] == 12:
-            case12.append(case)
-        elif milldat[x][0] == 13:
-            case13.append(case)
-        elif milldat[x][0] == 14:
-            case14.append(case)
-        elif milldat[x][0] == 15:
-            case15.append(case)
-        else:
-            case16.append(case)
-        case = []   #reset case
-'''
 #input features
 
 #output features
