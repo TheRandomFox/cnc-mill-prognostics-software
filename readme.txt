@@ -21,12 +21,12 @@ New format == numpy array
 milldat[x][y][z][0]:
 x = experiment index, len==167 (each case done multiple times, varying by duration)
 y = field index, len==13
-z = experiment data index for y=7:12, len==9000; for y=0:6, len==1
+z = sensor data index for y=7:12, len==9000; for y=0:6, len==1
 [0] = for some reason each individual value in each list is in a (1,1) array; Must use a 4th dimension to extract the values.
 
 field legend:
 0 = case            type of experiment being run; defines DOC, feed & material
-1 = run             no. of experiment runs in each case
+1 = run             iterative counter for experiment runs in each case
 2 = VB              flank wear, mm (dist from cutting edge to abrasive wear on flank of tool)
 3 = time            duration, s
 4 = DOC             depth of cut, mm
