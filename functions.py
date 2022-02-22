@@ -15,9 +15,7 @@ def rootMeanSquare(sensorData):
     Input: array list [float]
     Calculates root mean square of all values in the given array
     '''
-    rms = 0
-    for i in sensorData:
-        rms = rms + (sensorData[i] * sensorData[i])
+    rms = np.sum( np.square(sensorData) )
     rms = np.sqrt( rms/len(sensorData) )
 
     return rms
