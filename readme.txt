@@ -9,17 +9,18 @@ Credit: A. Agogino and K. Goebel (2007). BEST lab, UC Berkeley.
 
 ****************************************
 
-Attempt to read mill.mat file; extract contents of 'mill' key and unused flat dimension
+Read mill.mat file; extract contents of 'mill' key and unused flat dimension
 Original format == dict, read from MATLAB array
 New format == numpy array
 
 
 
-# milldat structure
-milldat[x][y][z]:
+##### milldat structure #####
+milldat[x][y][z][0]:
 x = experiment index, len==167 (each case done multiple times, varying by duration)
 y = field index, len==13
 z = experiment data index for y=7:12, len==9000; for y=0:6, len==1
+[0] = for some reason each individual value in each list is in a (1,1) array; Must use a 4th dimension to extract the values.
 
 field legend:
 0 = case            type of experiment being run; defines DOC, feed & material
@@ -39,3 +40,6 @@ field legend:
 Note:
     According to the dataset readme, for some of the experiments t or VB are empty because they were not measured.
     The program will ignore these cases.
+
+##############################
+
