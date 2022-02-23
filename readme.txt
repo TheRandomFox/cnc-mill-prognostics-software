@@ -34,14 +34,14 @@ Convert into Pandas dataframe
 
 ##### milldat structure #####
 milldat[x][y][z][0]:
-x = experiment no., len==167 (each case measured multiple times as duration progresses)
+x = experiment index, len==167 (each case measured multiple times as duration progresses)
 y = field index, len==13
 z = sensor data index for y=7:12, len==9000; for y=0:6, len==1
 [0] = for some reason each individual value in each list is in a (1,) array; Must use a 4th dimension to extract the values.
 
 field legend:
 0 = case            type of experiment being run; defines DOC, feed & material
-1 = run             iterative counter for experiment runs in each case
+1 = run             iterative counter for experiment recording in each case
 2 = VB              flank wear, mm (dist from cutting edge to abrasive wear on flank of tool)
 3 = time            duration, s
 4 = DOC             depth of cut, mm
@@ -58,5 +58,6 @@ Note:
     According to the dataset readme, for some of the experiments t or VB are empty because they were not measured.
     The program will ignore these cases.
 
+x==17, 94 & 105 contain corrupt or otherwise unsuitable data and will be removed from the dataframe.
 ##############################
 
