@@ -4,7 +4,7 @@ author: Abdul Halim bin Slamat
 std no.: 9664005
 cohort: FT/CS119
 
-Original dataset & report can be acquired at: https://ti.arc.nasa.gov/c/4/
+Original dataset & attached report can be acquired at: https://ti.arc.nasa.gov/c/4/
 Credit: K.Goebel & A.Agogino
 """
 
@@ -17,7 +17,7 @@ import pandas as pd
 
 #read file; extract contents of 'mill' key and unused flat dimension
 #original format == dict, from MATLAB array
-#reformat to numpy array
+#Convert to numpy.ndarray
 try:
     milldat = loadmat('mill.mat')
     milldat = milldat['mill'][0]
@@ -45,21 +45,20 @@ for y in range(7):
     df_mill[y] = dat
 
 #set row & column labels
-df_mill.index = range(len(milldat))
-df_mill.columns = fields[0:7]
+df_mill.index = range(len(milldat))     #X-axis labels
+df_mill.columns = fields[0:7]          #Y-axis labels
 
 #visualise dataframe table
-print(df_mill)
+print(df_mill,'\n\n')
 
-#plot graph of VB/t for case 1
-cs1_vb = []; cs1_t = []
-for cn in range(0,12):
-    dat = []
-    cs1_vb.append(df_mill.at[cn,'VB'])
-    cs1_t.append(df_mill.at[cn,'time'])
-plt.plot(cs1_t, cs1_vb, '-')
-plt.xlabel('Time (s)')
-plt.ylabel('Tool wear (mm)')
+print('Visualise data for a given cut number.\n')
+cutNo = 166
+plt.plot(milldat[cutNo][7], label='smcAC')
+plt.plot(milldat[cutNo][8], label='smcDC')
+plt.plot(milldat[cutNo][9], label='vib_table')
+plt.plot(milldat[cutNo][10], label='vib_spindle')
+plt.plot(milldat[cutNo][11], label='AE_table')
+plt.plot(milldat[cutNo][12], label='AE_spindle')
 
 #input features
 
