@@ -11,7 +11,6 @@ Credit: K.Goebel & A.Agogino
 #import packages
 from sys import exit
 from scipy.io import loadmat
-import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
@@ -24,63 +23,28 @@ try:
 except:
     exit("Error: 'Mill.mat' either does not exist or could not be read.")
 
-#identify fields and store label names
-fields = milldat.dtype.names
-print('List of field names:\n', fields, '\n')
 
-#new Pandas dataframe
-df_mill = pd.DataFrame()
+df_mill = prepData(milldat)
 
-#extract label data into df_mill (not sensor data)
-#reshape table
-#x-axis: fields; y-axis: data values
-for y in range(7):
-    #set/reset temp container
-    dat = []
-    for x in range(len(milldat)):
-        dat.append(milldat[x][y][0][0])
-    #make contents of dat a numpy array
-    dat = np.array(dat)
-    #insert into df_mill
-    df_mill[y] = dat
-
-#set row & column labels
-df_mill.index = range(len(milldat))     #X-axis labels
-df_mill.columns = fields[0:7]          #Y-axis labels
-
-#visualise dataframe table
-print(df_mill,'\n\n')
-
-print('Visualise data for a given cut number.\n')
+'''#Visualise data for a given cut number.
 cutNo = 166
+print('Cut: ', cutNo)
 plt.plot(milldat[cutNo][7], label='smcAC')
 plt.plot(milldat[cutNo][8], label='smcDC')
 plt.plot(milldat[cutNo][9], label='vib_table')
 plt.plot(milldat[cutNo][10], label='vib_spindle')
 plt.plot(milldat[cutNo][11], label='AE_table')
 plt.plot(milldat[cutNo][12], label='AE_spindle')
+plt.title(cutNo)
+plt.legend()'''
+
+
 
 #input features
 
 #output features
 #remaining useful life => not obtainable. insufficient information.
-'''
-Table A:
-    X-axis: rate of wear = dVB/dt
-    Y-axis: rate of traversal = DOC/t
 
-Table B:
-    X-axis: rate of wear = dVB/dt
-    Y-axis: motor current = smcAC, smcDC
-
-Table C:
-    X-axis: rate of wear = dVB/dt
-    Y-axis: equipment vibration = vib_table, vib_spindle
-
-Table D:
-    X-axis: rate of wear = dVB/dt
-    Y-axis: noise emission = ae_table, ae_spindle
-'''
 
 
 #divide data sets into training & testing groups
