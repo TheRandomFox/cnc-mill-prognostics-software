@@ -34,7 +34,7 @@ Convert into Pandas dataframe
 
 ##### milldat structure #####
 milldat[x][y][z][0]:
-x = cut no., len==167 (each case measured multiple times as duration progresses)
+x = experiment no., len==167 (each case measured multiple times as duration progresses)
 y = field index, len==13
 z = sensor data index for y=7:12, len==9000; for y=0:6, len==1
 [0] = for some reason each individual value in each list is in a (1,) array; Must use a 4th dimension to extract the values.
