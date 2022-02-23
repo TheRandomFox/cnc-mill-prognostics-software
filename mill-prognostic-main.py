@@ -11,8 +11,8 @@ Credit: K.Goebel & A.Agogino
 #import packages
 from sys import exit
 from scipy.io import loadmat
-import matplotlib.pyplot as plt
 import pandas as pd
+import functions
 
 #read file; extract contents of 'mill' key and unused flat dimension
 #original format == dict, from MATLAB array
@@ -25,6 +25,7 @@ except:
 
 
 df_mill = prepData(milldat)
+print(df_mill)
 
 '''#Visualise data for a given cut number.
 cutNo = 166
@@ -37,7 +38,6 @@ plt.plot(milldat[cutNo][11], label='AE_table')
 plt.plot(milldat[cutNo][12], label='AE_spindle')
 plt.title(cutNo)
 plt.legend()'''
-
 
 
 #input features

@@ -9,7 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
-def prepData(milldat):
+def prepData(ndarray):
     '''
     Takes the raw data and prepares it for use.
     Find and get rid of corrupt indexes.
@@ -40,4 +40,5 @@ def prepData(milldat):
 
     #visualise dataframe table
     print(df_mill,'\n\n')
-    return df_mill
+
+    return pd.Dataframe()
