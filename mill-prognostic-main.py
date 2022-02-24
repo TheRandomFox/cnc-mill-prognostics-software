@@ -12,7 +12,7 @@ Credit: K.Goebel & A.Agogino
 from sys import exit
 from scipy.io import loadmat
 import pandas as pd
-import functions
+import functions as fn
 
 #read file; extract contents of 'mill' key and unused flat dimension
 #original format == dict, from MATLAB array
@@ -24,7 +24,7 @@ except:
     exit("Error: 'Mill.mat' either does not exist or could not be read.")
 
 
-df_mill = prepData(milldat)
+df_mill = fn.prepData(milldat)
 print(df_mill)
 
 '''#Visualise data for a given cut number.
