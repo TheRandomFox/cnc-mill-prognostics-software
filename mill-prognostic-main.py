@@ -9,12 +9,11 @@ Credit: K.Goebel & A.Agogino
 """
 
 #import packages
+import plotdata
 from sys import exit
 from scipy.io import loadmat
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-
 
 #read file; extract contents of 'mill' key and unused flat dimension
 #original format == dict, from MATLAB array
@@ -25,6 +24,9 @@ try:
 except:
     exit("Error: 'Mill.mat' either does not exist or could not be read.")
 
+print('Data file loaded successfully.\n\n')
+isRunning = 1
+
 def prepData(ndarray):
     '''
     Takes the raw data and prepares it for use.
@@ -33,7 +35,6 @@ def prepData(ndarray):
     global milldat
     #identify fields and store label names
     fields = milldat.dtype.names
-    print('List of field names:\n', fields, '\n')
 
     #new Pandas dataframe
     dfmill = pd.DataFrame()
@@ -63,19 +64,35 @@ def prepData(ndarray):
 
     return dfmill
 
+
 dfmill = prepData(milldat)
 
-'''#Visualise data for a given cut number.
-cutNo = 166
-print('Cut: ', cutNo)
-plt.plot(milldat[cutNo][7], label='smcAC')
-plt.plot(milldat[cutNo][8], label='smcDC')
-plt.plot(milldat[cutNo][9], label='vib_table')
-plt.plot(milldat[cutNo][10], label='vib_spindle')
-plt.plot(milldat[cutNo][11], label='AE_table')
-plt.plot(milldat[cutNo][12], label='AE_spindle')
-plt.title(cutNo)
-plt.legend()'''
+#Main program loop
+while isRunning == 1:
+    #main menu
+    print('========================================\n'
+          'To view sample data from 1 cut, enter "1"\n'
+          'To show prediction result, enter "2"\n'
+          'To exit program, enter "exit"\n'
+          '========================================\n')
+    cmd = lower(input())
+    if cmd == '1':
+        cutNo = int(input('\nView which cut? (1-164):'))-1
+        plotGraph(milldat,cutNo)
+    elif cmd == '2':
+        print('Not implemented yet...\n')
+        #call prediction algorithm here
+    elif cmd == 'exit':
+        ask = lower(input('Are you sure you want to close the program? (Y/N) '))
+        if ask == 'n':
+            break
+        elif ask == 'y':
+            isRunning = 0
+            break
+        else print('Invalid input.\n\n')
+    else print('Invalid input.\n\n')
+
+
 
 
 #input features
