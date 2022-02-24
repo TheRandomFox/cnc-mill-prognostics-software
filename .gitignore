@@ -6,3 +6,4 @@
 *.mat
 *.bak
 *.stats
+*.pyc
