@@ -67,6 +67,10 @@ def prepData(ndarray):
 
 dfmill = prepData(milldat)
 
+#visualise data sample
+cutNo = 100
+plotGraph(milldat,cutNo)
+
 #input features
 
 #output features
@@ -86,7 +90,8 @@ dfmill = prepData(milldat)
 #Root mean squared error
 
 #Main program loop
-''' #input() function is borked on IPython console
+#note: input() function is borked on IPython console. Will crash if run on Spyder IDE.
+'''
 while isRunning == 1:
     #main menu
     print('========================================\n'
@@ -112,3 +117,4 @@ while isRunning == 1:
             print('Invalid input.\n\n')
     else:
         print('Invalid input.\n\n')
+'''
