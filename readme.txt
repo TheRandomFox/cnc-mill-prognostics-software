@@ -14,6 +14,7 @@ INTRODUCTION:
 The purpose of this program is to use machine learning in an attempt to predict the state of wear for CNC milling machine tools by finding correlations between the degree of wear on the tool against sensor data collected from the spindle motor current, and the vibration and noise emission of the spindle and working table.
 
 The original objective was to find to remaining useful lifespan of the tool, i.e. the remaining time until the predicted point of failure at the currect rate of use. However this would turn out to be unobtainable as I lacked several critical points of value necessary for the calculation. These values are intrinsic properties of the individual tool types and the worked material, and thus cannot be derived from the data that I have.
+
 Therefore the objective was changed to instead attempt to predict the current state of wear on the tool based on sensor data input.
 
 ****************************************
@@ -58,6 +59,6 @@ Note:
     According to the dataset readme, for some of the experiments t or VB are empty because they were not measured.
     The program will ignore these cases.
 
-x==17, 94 & 105 contain corrupt or otherwise unsuitable data and will be removed from the dataframe.
+x==17, 94 & 105 contain corrupt or otherwise unsuitable data and will be removed from the dataset.
 ##############################
 
