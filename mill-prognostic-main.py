@@ -67,7 +67,26 @@ def prepData(ndarray):
 
 dfmill = prepData(milldat)
 
+#input features
+
+#output features
+#remaining useful life => not obtainable. insufficient information.
+
+#divide data sets into training & testing groups
+
+#visualise data
+
+#train algorithm
+#alg used:
+
+#print training result
+#print('X-intercept: ', reg.intercept_)
+#print('Coefficient: ', reg.coef_)
+
+#Root mean squared error
+
 #Main program loop
+''' #input() function is borked on IPython console
 while isRunning == 1:
     #main menu
     print('========================================\n'
@@ -75,7 +94,7 @@ while isRunning == 1:
           'To show prediction result, enter "2"\n'
           'To exit program, enter "exit"\n'
           '========================================\n')
-    cmd = lower(input())
+    cmd = str.lower(input())
     if cmd == '1':
         cutNo = int(input('\nView which cut? (1-164):'))-1
         plotGraph(milldat,cutNo)
@@ -83,38 +102,13 @@ while isRunning == 1:
         print('Not implemented yet...\n')
         #call prediction algorithm here
     elif cmd == 'exit':
-        ask = lower(input('Are you sure you want to close the program? (Y/N) '))
-        if ask == 'n':
+        ans = str.lower(input('Are you sure you want to close the program? (Y/N) '))
+        if ans == 'n':
             break
-        elif ask == 'y':
+        elif ans == 'y':
             isRunning = 0
             break
-        else print('Invalid input.\n\n')
-    else print('Invalid input.\n\n')
-
-
-
-
-#input features
-
-#output features
-#remaining useful life => not obtainable. insufficient information.
-
-
-
-#divide data sets into training & testing groups
-
-
-#visualise data
-
-
-#train algorithm
-#alg used:
-
-
-#print training result
-#print('X-intercept: ', reg.intercept_)
-#print('Coefficient: ', reg.coef_)
-
-
-#Root mean squared error
+        else:
+            print('Invalid input.\n\n')
+    else:
+        print('Invalid input.\n\n')
