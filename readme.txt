@@ -22,18 +22,14 @@ Therefore the objective was changed to instead attempt to predict the current st
 REQUIREMENTS:
 	NumPy
 	Scipy
-	Sklearn
+	Scikit-learn
 	Pandas
 	Matplotlib
+	mill.mat dataset file
 	
 ****************************************
+Milldat structure
 
-Reads mill.mat file
-Original format == dict, read from MATLAB array
-Convert into Pandas dataframe
-
-
-##### milldat structure #####
 milldat[x][y][z][0]:
 x = experiment index, len==167 (each case measured multiple times as duration progresses)
 y = field index, len==13
@@ -56,9 +52,16 @@ field legend:
 12 = AE_spindle     Acoustic emission at spindle, kHz
 
 Note:
-    According to the dataset readme, for some of the experiments t or VB are empty because they were not measured.
-    The program will ignore these cases.
+    - According to the dataset readme, for some of the experiments t or VB are empty because they were not measured.
+	- Indexes 17, 94 & 105 contain corrupt or otherwise unsuitable data and will be removed from the dataset.
 
-x==17, 94 & 105 contain corrupt or otherwise unsuitable data and will be removed from the dataset.
 ##############################
+Classification:
+VB				| Label
+VB < 0.4 		: 'Good'
+0.8 > VB >= 0.4	: 'Degraded'
+VB >= 0.8		: 'Failed'
 
+Note: The thresholds chosen for VB are just dummy values for the purpose of this project.
+
+##############################
