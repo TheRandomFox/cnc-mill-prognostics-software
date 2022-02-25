@@ -43,6 +43,9 @@ def prepData(milldat):
         dat = []
         for x in range(len(milldat)):
             dat.append(milldat[x][y][0][0])
+            #at the same time, replace any NaN values with zeros
+            if np.nan(milldat[x][y][0][0]) == True:
+                milldat[x][y][0][0] = 0
         #make contents of dat a numpy array
         dat = np.array(dat)
         #insert into df_mill
@@ -61,7 +64,7 @@ def sensorsArray(milldat):
     '''Extract sensor readings from milldat and put them in
     their own array.
 
-    Params:
+    Parameters:
         milldat : ndarray
 
     Returns:
@@ -84,12 +87,23 @@ def sensorsArray(milldat):
     return sarray
 
 
-def train(milldat):
-    #train algorithm
-    #alg used:
+def train(milldat, sarray):
+    '''
+    Feature selection and training the algorithm.
+    feats in (x): sensor data ; feats out (y): VB
+
+    Parameters
+    ----------
+    milldat : ndarray
+    sarray : list
+
+    Returns
+    -------
+    None.
+    '''
     #divide data sets into training & testing groups
     #split training/testing data by index
-    #mill_index = range(len(milldat))
+    fs.VarianceThreshold()
 
     x_train, x_test = train_test_split(() )
 
