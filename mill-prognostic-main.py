@@ -29,19 +29,14 @@ isRunning = 1
 
 #create labels dataframe, remove unusable indexes from milldat
 dfmill, milldat = ml.prepData(milldat)
-
+#create sensors dataframe
+sarray = ml.sensorsArray(milldat)
 #input features
 
 
 #output features
 #remaining useful life => not obtainable. insufficient information.
 
-#divide data sets into training & testing groups
-
-#visualise data
-
-#train algorithm
-#alg used:
 
 #print training result
 #print('X-intercept: ', reg.intercept_)
