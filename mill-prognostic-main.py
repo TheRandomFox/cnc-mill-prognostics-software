@@ -9,11 +9,11 @@ Credit: K.Goebel & A.Agogino
 """
 
 #import packages
-import plotdata
+import plotdata as pl
+import machineLearning as ml
 from sys import exit
 from scipy.io import loadmat
-import numpy as np
-import pandas as pd
+
 
 #read file; extract contents of 'mill' key and unused flat dimension
 #original format == dict, from MATLAB array
@@ -27,51 +27,11 @@ except:
 print('Data file loaded successfully.\n\n')
 isRunning = 1
 
-def prepData(ndarray):
-    '''
-    Takes the raw data and prepares it for use.
-    Find and get rid of corrupt indexes.
-    '''
-    global milldat
-    #identify fields and store label names
-    fields = milldat.dtype.names
-
-    #new Pandas dataframe
-    dfmill = pd.DataFrame()
-
-    #remove corrupt/unusable indexes
-    milldat = np.delete(milldat,[17,94,105],0)
-
-    #extract label data into df_mill (not sensor data)
-    #reshape table
-    #x-axis: fields; y-axis: data values
-    for y in range(7):
-        #set/reset temp container
-        dat = []
-        for x in range(len(milldat)):
-            dat.append(milldat[x][y][0][0])
-        #make contents of dat a numpy array
-        dat = np.array(dat)
-        #insert into df_mill
-        dfmill[y] = dat
-
-    #set row & column labels
-    dfmill.index = range(len(dfmill))     #X-axis labels
-    dfmill.columns = fields[0:7]          #Y-axis labels
-
-    #visualise dataframe table
-    print(dfmill,'\n\n')
-
-    return dfmill
-
-
-dfmill = prepData(milldat)
-
-#visualise data sample
-cutNo = 100
-plotGraph(milldat,cutNo)
+#create labels dataframe, remove unusable indexes from milldat
+dfmill, milldat = ml.prepData(milldat)
 
 #input features
+
 
 #output features
 #remaining useful life => not obtainable. insufficient information.
@@ -90,8 +50,7 @@ plotGraph(milldat,cutNo)
 #Root mean squared error
 
 #Main program loop
-#note: input() function is borked on IPython console. Will crash if run on Spyder IDE.
-'''
+
 while isRunning == 1:
     #main menu
     print('========================================\n'
@@ -102,7 +61,7 @@ while isRunning == 1:
     cmd = str.lower(input())
     if cmd == '1':
         cutNo = int(input('\nView which cut? (1-164):'))-1
-        plotGraph(milldat,cutNo)
+        pl.plotGraph(milldat,cutNo)
     elif cmd == '2':
         print('Not implemented yet...\n')
         #call prediction algorithm here
@@ -117,4 +76,3 @@ while isRunning == 1:
             print('Invalid input.\n\n')
     else:
         print('Invalid input.\n\n')
-'''
