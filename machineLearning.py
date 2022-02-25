@@ -77,17 +77,27 @@ def sensorsArray(milldat):
         for mdy in range(7,12):
             arr = []
             arr.append(milldat[mdx][mdy][0][1000::])
+            #ignore the first 1000 readings as the milling machine had not started yet
         sarray.append(arr)
     #make sure it's the right shape
     sarray = np.reshape(sarray, (len(milldat),6))
     return sarray
 
 
-def featureSelection(milldat):
+def train(milldat):
+    #train algorithm
+    #alg used:
+    #divide data sets into training & testing groups
     #split training/testing data by index
     #mill_index = range(len(milldat))
-    x_labels = [milldat[:][2], ]
+
     x_train, x_test = train_test_split(() )
 
 
     #feats = Pipeline( )
+
+
+
+#print training result
+#print('X-intercept: ', reg.intercept_)
+#print('Coefficient: ', reg.coef_)
