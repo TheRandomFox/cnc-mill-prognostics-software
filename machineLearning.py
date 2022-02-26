@@ -72,7 +72,8 @@ def prepData(milldat):
     for y in range(7,13):   #x2
         dat = []    #reset dat
         for x in range(len(milldat)):
-            dat.append(milldat[x][y][0][0])
+            #ignore the first 1000 readings as the milling machine had not started yet
+            dat.append(milldat[x][y][1000::][0])
         df_x2[dx] = dat
         dx = dx+1
 
@@ -89,7 +90,7 @@ def classify_wear_state(vb):
     Assigns labels to VB values based on degree of wear.
     The thresholds chosen for VB are just dummy values for the purpose of this project.
     Classification:
-        VB				| Label
+        VB value		| Label
         VB < 0.2 		: 'Good'
         0.2 <= VB < 0.4	: 'Fair'
         0.4 <= VB < 0.6 : 'Degraded'
@@ -114,32 +115,6 @@ def classify_wear_state(vb):
         return 'Critical'
     else:
         return 'Failed'
-
-def sensorsArray(milldat):
-    '''Extract sensor readings from milldat and put them in
-    their own array.
-
-    Parameters:
-        milldat : ndarray
-
-    Returns:
-        sarray : ndarray
-    '''
-    datlen = len(milldat)
-    sarray = []
-    for mdx in range(datlen):
-        for mdy in range(7,12):
-            arr = []
-            arr.append(milldat[mdx][mdy][0][1001::])
-            #ignore the first 1000 readings as the milling machine had not started yet
-        sarray.append(arr)
-    #make sure it's the right shape
-    print(sarray)
-    sarray = np.array(sarray)
-
-    #sarray = np.reshape(sarray, (datlen,6))
-    return sarray
-
 
 def train(df_x1, df_x2, df_y):
     '''
