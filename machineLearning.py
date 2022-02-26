@@ -13,7 +13,7 @@ import pandas as pd
 
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
-import sklearn.tree as dtr
+from sklearn.ensemble import AdaBoostRegressor
 import sklearn.decomposition as dcomp
 from sklearn.metrics import accuracy_score
 #import sklearn.pipeline.Pipeline as pipe
@@ -22,6 +22,7 @@ def prepData(milldat):
     '''
     Takes the raw data and prepares it for use.
     Find and get rid of corrupt or unusable indexes.
+    Apply StandardScaler to each dataframe
     df_x1 = feed, DOC, material : input 1
     df_x2 = signal data vals    : input 2
     df_y = VB labels            : output
@@ -33,7 +34,7 @@ def prepData(milldat):
     Returns
     ----------
     milldat : ndarray
-    df_x1, df_x2, df_y : DataFrame
+    dfs_x1, dfs_x2, dfs_y : DataFrame
     '''
 
     #remove corrupt/unusable indexes
@@ -77,12 +78,13 @@ def prepData(milldat):
         df_x2.append(dat)
     df_x2 = pd.DataFrame(data=df_x2)
 
-    '''
+
     #Perform scaling by Standardization
-    df_x1 = StandardScaler.transform(df_x1)
-    df_x2 = StandardScaler.transform(df_x2)
-    df_y = StandardScaler.transform(df_y)
-    '''
+    scaler = StandardScaler()
+    df_x1 = scaler.fit_transform(df_x1)
+    df_x2 = scaler.fit_transform(df_x2)
+    df_y = scaler.fit_transform(df_y)
+
     #visualise dataframe table
     #print('Visualise dataset labels:\n\n')
     print('X1:\n', df_x1,'\n')
@@ -139,20 +141,20 @@ def train(df_x1, df_x2, df_y):
     '''
 
     #divide data sets into training & testing groups
-    feats1_train, feats1_test, labels_train, labels_test = train_test_split(df_x1, df_y, test_size=0.1)
-    feats2_train, feats2_test, labels_train, labels_test = train_test_split(df_x2, df_y, test_size=0.1)
+    X1_train, X1_test, y_train, y_test = train_test_split(df_x1, df_y, test_size=0.1)
+    X2_train, X2_test, y_train, y_test = train_test_split(df_x2, df_y, test_size=0.1)
 
     #prediction x1
-    clf1 = dtr.DecisionTreeClassifier(criterion='entropy', min_samples_split=12)
-    clf1.fit(feats1_train, labels_train)
-    pred1 = clf1.predict(feats1_test)
+    reg1 = AdaBoostRegressor()
+    reg1.fit(X1_train, y_train)
+    pred1 = reg1.predict(X1_test)
 
     #prediction x2
     #clf2 = dcomp.FastICA(max_iter=200, tol=1e-3)
     #clf2.
 
     #determine accuracy rate
-    acc1 = accuracy_score(labels_test, pred1)
+    acc1 = reg1.score(pred1, y_test)
     print('X1 accuracy: ', round(acc1, 4))
 
     #Root mean squared error
