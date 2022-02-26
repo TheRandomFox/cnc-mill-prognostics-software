@@ -12,6 +12,7 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 import sklearn.tree
+import sklearn.naive_bayes as nb
 from sklearn.metrics import accuracy_score
 #from sklearn.pipeline import Pipeline
 
@@ -62,10 +63,12 @@ def prepData(milldat):
         '''
         if vb < 0.2:
             return 'Good'
-        elif vb < 0.6:
+        elif vb < 0.4:
             return 'Fair'
-        elif vb <0.8:
+        elif vb < 0.6:
             return 'Degraded'
+        elif vb < 0.8:
+            return 'Critical'
         else:
             return 'Failed'
 
