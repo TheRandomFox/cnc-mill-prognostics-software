@@ -10,7 +10,7 @@ Credit: K.Goebel & A.Agogino
 
 import numpy as np
 import pandas as pd
-import sklearn.preprocessing as prep
+import sklearn.preprocessing.StandardScaler as stscale
 from sklearn.model_selection import train_test_split
 import sklearn.tree as dtr
 import sklearn.decomposition as dcomp
@@ -49,40 +49,6 @@ def prepData(milldat):
     for i in range(len(xnan)):
         milldat[xnan[i]][2][0][0] = vbmean[0]
 
-    def classify_wear_state(vb):
-        '''
-        Assigns labels to VB values based on degree of wear.
-        The thresholds chosen for VB are just dummy values for the purpose of this project.
-        Classification:
-            VB				| Label
-            VB < 0.2 		: 'Good'
-            0.2 <= VB < 0.4	: 'Fair'
-            0.4 <= VB < 0.6 : 'Degraded'
-            0.6 <= VB < 0.8	: 'Critical'
-            VB >= 0.8		: 'Failed'
-
-        Parameters
-        ----------
-        vb : float
-
-        Returns
-        ----------
-        vb_label : string
-        '''
-        if vb < 0.2:
-            return 'Good'
-        elif vb < 0.4:
-            return 'Fair'
-        elif vb < 0.6:
-            return 'Degraded'
-        elif vb < 0.8:
-            return 'Critical'
-        else:
-            return 'Failed'
-
-    def preprocessData():
-
-
     #new Pandas dataframes
     df_x1 = pd.DataFrame()
     df_x2 = pd.DataFrame()
@@ -91,8 +57,7 @@ def prepData(milldat):
     #populate df_y, df_x1, df_x2
     dat = []
     for x in range(len(milldat)):   #y
-        vb_label = classify_wear_state(milldat[x][2][0][0])
-        dat.append(vb_label)
+        dat.append(milldat[x][2][0][0])
     df_y[0] = dat
 
     dx = 0  #index counter
@@ -111,7 +76,6 @@ def prepData(milldat):
         df_x2[dx] = dat
         dx = dx+1
 
-
     #visualise dataframe table
     #print('Visualise dataset labels:\n\n')
     #print('X1:\n', df_x1,'\n')
@@ -120,6 +84,36 @@ def prepData(milldat):
 
     return milldat, df_x1, df_x2, df_y
 
+def classify_wear_state(vb):
+    '''
+    Assigns labels to VB values based on degree of wear.
+    The thresholds chosen for VB are just dummy values for the purpose of this project.
+    Classification:
+        VB				| Label
+        VB < 0.2 		: 'Good'
+        0.2 <= VB < 0.4	: 'Fair'
+        0.4 <= VB < 0.6 : 'Degraded'
+        0.6 <= VB < 0.8	: 'Critical'
+        VB >= 0.8		: 'Failed'
+
+    Parameters
+    ----------
+    vb : float
+
+    Returns
+    ----------
+    vb_label : string
+    '''
+    if vb < 0.2:
+        return 'Good'
+    elif vb < 0.4:
+        return 'Fair'
+    elif vb < 0.6:
+        return 'Degraded'
+    elif vb < 0.8:
+        return 'Critical'
+    else:
+        return 'Failed'
 
 def sensorsArray(milldat):
     '''Extract sensor readings from milldat and put them in
@@ -156,13 +150,17 @@ def train(df_x1, df_x2, df_y):
     df_x1 : DataFrame (164,3)
     df_x2 : DataFrame (164,6)
     df_y : Dataframe (164,1)
-    df_x_predict : Dataframe (1,9)
+    xpredict : ndarray (1,9)
 
     Returns
     -------
     None.
     '''
-    #remaining useful life => not obtainable. insufficient information.
+
+    #Perform scaling by Standardization
+    stscale.fit_transform(df_x1)
+    stscale.fit_transform(df_x2)
+    stscale.fit_transform(df_y)
 
     #divide data sets into training & testing groups
     feats1_train, feats1_test, labels_train, labels_test = train_test_split(df_x1, df_y, test_size=0.1)
@@ -175,7 +173,7 @@ def train(df_x1, df_x2, df_y):
 
     #prediction x2
     clf2 = dcomp.FastICA(max_iter=200, tol=1e-3)
-    clf2.
+    #clf2.
 
     #determine accuracy rate
     acc1 = accuracy_score(labels_test, pred1)
