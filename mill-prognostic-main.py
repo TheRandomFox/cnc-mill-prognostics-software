@@ -28,10 +28,10 @@ print('Data file loaded successfully.\n\n')
 isRunning = 1
 
 #create labels dataframe, remove unusable indexes from milldat
-dfmill, milldat = ml.prepData(milldat)
+milldat, df_x1, df_x2, df_y = ml.prepData(milldat)
 #create sensors dataframe
-sarray = ml.sensorsArray(milldat)
-predict = ml.train(milldat,sarray)
+#sarray = ml.sensorsArray(milldat)
+#predict = ml.train(milldat,sarray)
 #Main program loop
 '''
 while isRunning == 1:
