@@ -27,23 +27,23 @@ except:
 print('Data file loaded successfully.\n\n')
 isRunning = 1
 
-#create labels dataframe, remove unusable indexes from milldat
+#Prepare data : create dataframes, remove unusable indexes from milldat
 milldat, df_x1, df_x2, df_y = ml.prepData(milldat)
-#create sensors dataframe
-#sarray = ml.sensorsArray(milldat)
-#predict = ml.train(milldat,sarray)
+
+predict = ml.train(df_x1,df_x2,df_y)
 #Main program loop
 '''
 while isRunning == 1:
     #main menu
     print('========================================\n'
           'To view sample data from 1 cut, enter "1"\n'
-          'To show prediction result, enter "2"\n'
+          'To show prediction accuracy result, enter "2"\n'
+          ''
           'To exit program, enter "exit"\n'
           '========================================\n')
     cmd = str.lower(input())
     if cmd == '1':
-        cutNo = int(input('\nView which cut? (1-164):'))-1
+        cutNo = int(input('\nView which cut? (1-',len(milldat),'): '))-1
         pl.plotGraph(milldat,cutNo)
     elif cmd == '2':
         #prediction
