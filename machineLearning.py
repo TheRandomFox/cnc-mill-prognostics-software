@@ -10,10 +10,12 @@ Credit: K.Goebel & A.Agogino
 
 import numpy as np
 import pandas as pd
+import sklearn.preprocessing as prep
 from sklearn.model_selection import train_test_split
 import sklearn.tree as dtr
+import sklearn.decomposition as dcomp
 from sklearn.metrics import accuracy_score
-#from sklearn.pipeline import Pipeline
+import sklearn.pipeline.Pipeline as pipe
 
 def prepData(milldat):
     '''
@@ -35,22 +37,29 @@ def prepData(milldat):
 
     #remove corrupt/unusable indexes
     milldat = np.delete(milldat,[17,94,105],0)
-
-    #new Pandas dataframes
-    df_x1 = pd.DataFrame()
-    df_x2 = pd.DataFrame()
-    df_y = pd.DataFrame()
+    #replace NaN indexes with mean values
+    xnan = [] #store indexes with nan values
+    vbmean = []
+    for x in range(len(milldat)):
+        if np.isnan(milldat[x][2][0][0]) == True:
+            xnan.append(x)
+        else:
+            vbmean.append(milldat[x][2][0][0])
+    vbmean = np.mean(vbmean)
+    for i in range(len(xnan)):
+        milldat[xnan[i]][2][0][0] = vbmean[0]
 
     def classify_wear_state(vb):
         '''
         Assigns labels to VB values based on degree of wear.
+        The thresholds chosen for VB are just dummy values for the purpose of this project.
         Classification:
             VB				| Label
             VB < 0.2 		: 'Good'
-            0.2 <= VB < 0.6	: 'Fair'
-            0.6 <= VB < 0.8	: 'Degraded'
+            0.2 <= VB < 0.4	: 'Fair'
+            0.4 <= VB < 0.6 : 'Degraded'
+            0.6 <= VB < 0.8	: 'Critical'
             VB >= 0.8		: 'Failed'
-        Note: The thresholds chosen for VB are just dummy values for the purpose of this project.
 
         Parameters
         ----------
@@ -71,12 +80,17 @@ def prepData(milldat):
         else:
             return 'Failed'
 
+    def preprocessData():
+
+
+    #new Pandas dataframes
+    df_x1 = pd.DataFrame()
+    df_x2 = pd.DataFrame()
+    df_y = pd.DataFrame()
+
     #populate df_y, df_x1, df_x2
     dat = []
     for x in range(len(milldat)):   #y
-        #in VB, replace any NaN values with zeros
-        if np.isnan(milldat[x][2][0][0]) == True:
-            milldat[x][2][0][0] = 0
         vb_label = classify_wear_state(milldat[x][2][0][0])
         dat.append(vb_label)
     df_y[0] = dat
@@ -96,6 +110,7 @@ def prepData(milldat):
             dat.append(milldat[x][y][0][0])
         df_x2[dx] = dat
         dx = dx+1
+
 
     #visualise dataframe table
     #print('Visualise dataset labels:\n\n')
@@ -158,10 +173,13 @@ def train(df_x1, df_x2, df_y):
     clf1.fit(feats1_train, labels_train)
     pred1 = clf1.predict(feats1_test)
 
-    clf2 =
-    #determine accuracy rate x1
-    acc = accuracy_score(labels_test, pred1)
-    print('X1 accuracy: ', round(acc, 4))
+    #prediction x2
+    clf2 = dcomp.FastICA(max_iter=200, tol=1e-3)
+    clf2.
+
+    #determine accuracy rate
+    acc1 = accuracy_score(labels_test, pred1)
+    print('X1 accuracy: ', round(acc1, 4))
 
     #Root mean squared error
 
