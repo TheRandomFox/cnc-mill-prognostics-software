@@ -31,21 +31,9 @@ isRunning = 1
 dfmill, milldat = ml.prepData(milldat)
 #create sensors dataframe
 sarray = ml.sensorsArray(milldat)
-#input features
-
-
-#output features
-#remaining useful life => not obtainable. insufficient information.
-
-
-#print training result
-#print('X-intercept: ', reg.intercept_)
-#print('Coefficient: ', reg.coef_)
-
-#Root mean squared error
-
+predict = ml.train(milldat,sarray)
 #Main program loop
-
+'''
 while isRunning == 1:
     #main menu
     print('========================================\n'
@@ -58,8 +46,8 @@ while isRunning == 1:
         cutNo = int(input('\nView which cut? (1-164):'))-1
         pl.plotGraph(milldat,cutNo)
     elif cmd == '2':
-        print('Not implemented yet...\n')
-        #call prediction algorithm here
+        #prediction
+        predict = ml.train(milldat,sarray)
     elif cmd == 'exit':
         ans = str.lower(input('Are you sure you want to close the program? (Y/N) '))
         if ans == 'n':
@@ -71,3 +59,4 @@ while isRunning == 1:
             print('Invalid input.\n\n')
     else:
         print('Invalid input.\n\n')
+'''
