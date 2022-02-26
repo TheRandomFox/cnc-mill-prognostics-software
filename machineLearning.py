@@ -10,12 +10,13 @@ Credit: K.Goebel & A.Agogino
 
 import numpy as np
 import pandas as pd
-import sklearn.preprocessing.StandardScaler as stscale
+
+from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 import sklearn.tree as dtr
 import sklearn.decomposition as dcomp
 from sklearn.metrics import accuracy_score
-import sklearn.pipeline.Pipeline as pipe
+#import sklearn.pipeline.Pipeline as pipe
 
 def prepData(milldat):
     '''
@@ -37,55 +38,60 @@ def prepData(milldat):
 
     #remove corrupt/unusable indexes
     milldat = np.delete(milldat,[17,94,105],0)
+    lenmill = len(milldat)
     #replace NaN indexes with mean values
     xnan = [] #store indexes with nan values
     vbmean = []
-    for x in range(len(milldat)):
+    for x in range(lenmill):
         if np.isnan(milldat[x][2][0][0]) == True:
             xnan.append(x)
         else:
             vbmean.append(milldat[x][2][0][0])
     vbmean = np.mean(vbmean)
     for i in range(len(xnan)):
-        milldat[xnan[i]][2][0][0] = vbmean[0]
-
-    #new Pandas dataframes
-    df_x1 = pd.DataFrame()
-    df_x2 = pd.DataFrame()
-    df_y = pd.DataFrame()
+        milldat[xnan[i]][2][0][0] = vbmean
 
     #populate df_y, df_x1, df_x2
+    #y (164,1)
     dat = []
-    for x in range(len(milldat)):   #y
+    for x in range(lenmill):
         dat.append(milldat[x][2][0][0])
-    df_y[0] = dat
+    df_y = pd.DataFrame(data=dat)
 
-    dx = 0  #index counter
-    for y in range(4,7):    #x1
-        dat = []    #reset dat
-        for x in range(len(milldat)):
+    #x1 (164,3)
+    df_x1 = []
+    for x in range(lenmill):
+        dat = []
+        for y in range(4,7):
             dat.append(milldat[x][y][0][0])
-        df_x1[dx] = dat
-        dx = dx+1
+        df_x1.append(dat)
+    df_x1 = pd.DataFrame(data=df_x1)
 
-    dx = 0
-    for y in range(7,13):   #x2
-        dat = []    #reset dat
-        for x in range(len(milldat)):
+    #x2 (164,6)
+    df_x2 = []
+    for x in range(lenmill):
+        dat = []
+        for y in range(7,13):
             #ignore the first 1000 readings as the milling machine had not started yet
-            dat.append(milldat[x][y][1000::][0])
-        df_x2[dx] = dat
-        dx = dx+1
+            dat.append(milldat[x][y][1001::][0])
+        df_x2.append(dat)
+    df_x2 = pd.DataFrame(data=df_x2)
 
+    '''
+    #Perform scaling by Standardization
+    df_x1 = StandardScaler.transform(df_x1)
+    df_x2 = StandardScaler.transform(df_x2)
+    df_y = StandardScaler.transform(df_y)
+    '''
     #visualise dataframe table
     #print('Visualise dataset labels:\n\n')
-    #print('X1:\n', df_x1,'\n')
-    #print('X2:\n', df_x2,'\n')
-    #print('Y:\n', df_y,'\n')
+    print('X1:\n', df_x1,'\n')
+    print('X2:\n', df_x2,'\n')
+    print('Y:\n', df_y,'\n')
 
     return milldat, df_x1, df_x2, df_y
 
-def classify_wear_state(vb):
+def classifyWearState(vb):
     '''
     Assigns labels to VB values based on degree of wear.
     The thresholds chosen for VB are just dummy values for the purpose of this project.
@@ -132,11 +138,6 @@ def train(df_x1, df_x2, df_y):
     None.
     '''
 
-    #Perform scaling by Standardization
-    stscale.fit_transform(df_x1)
-    stscale.fit_transform(df_x2)
-    stscale.fit_transform(df_y)
-
     #divide data sets into training & testing groups
     feats1_train, feats1_test, labels_train, labels_test = train_test_split(df_x1, df_y, test_size=0.1)
     feats2_train, feats2_test, labels_train, labels_test = train_test_split(df_x2, df_y, test_size=0.1)
@@ -147,7 +148,7 @@ def train(df_x1, df_x2, df_y):
     pred1 = clf1.predict(feats1_test)
 
     #prediction x2
-    clf2 = dcomp.FastICA(max_iter=200, tol=1e-3)
+    #clf2 = dcomp.FastICA(max_iter=200, tol=1e-3)
     #clf2.
 
     #determine accuracy rate
@@ -156,9 +157,3 @@ def train(df_x1, df_x2, df_y):
 
     #Root mean squared error
 
-
-
-
-#print training result
-#print('X-intercept: ', reg.intercept_)
-#print('Coefficient: ', reg.coef_)
