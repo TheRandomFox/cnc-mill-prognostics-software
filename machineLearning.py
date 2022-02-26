@@ -11,8 +11,7 @@ Credit: K.Goebel & A.Agogino
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-import sklearn.tree
-import sklearn.naive_bayes as nb
+import sklearn.tree as dtr
 from sklearn.metrics import accuracy_score
 #from sklearn.pipeline import Pipeline
 
@@ -99,10 +98,10 @@ def prepData(milldat):
         dx = dx+1
 
     #visualise dataframe table
-    print('Visualise dataset labels:\n\n')
-    print('X1:\n', df_x1,'\n')
-    print('X2:\n', df_x2,'\n')
-    print('Y:\n', df_y,'\n')
+    #print('Visualise dataset labels:\n\n')
+    #print('X1:\n', df_x1,'\n')
+    #print('X2:\n', df_x2,'\n')
+    #print('Y:\n', df_y,'\n')
 
     return milldat, df_x1, df_x2, df_y
 
@@ -142,6 +141,7 @@ def train(df_x1, df_x2, df_y):
     df_x1 : DataFrame (164,3)
     df_x2 : DataFrame (164,6)
     df_y : Dataframe (164,1)
+    df_x_predict : Dataframe (1,9)
 
     Returns
     -------
@@ -154,13 +154,15 @@ def train(df_x1, df_x2, df_y):
     feats2_train, feats2_test, labels_train, labels_test = train_test_split(df_x2, df_y, test_size=0.1)
 
     #prediction x1
-    clf1 =
+    clf1 = dtr.DecisionTreeClassifier(criterion='entropy', min_samples_split=12)
     clf1.fit(feats1_train, labels_train)
-    pred1 = clf1.predict(feats1_train)
+    pred1 = clf1.predict(feats1_test)
 
+    clf2 =
     #determine accuracy rate x1
-    acc = accuracy_score(pred1, labels_test)
-    print(acc)
+    acc = accuracy_score(labels_test, pred1)
+    print('X1 accuracy: ', round(acc, 4))
+
     #Root mean squared error
 
 
