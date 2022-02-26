@@ -20,16 +20,18 @@ def prepData(milldat):
     '''
     Takes the raw data and prepares it for use.
     Find and get rid of corrupt or unusable indexes.
-    df_x1 = feed, DOC, material; shape (164,:) : input 1
-    df_x2 = signal data vals;    shape (164,:) : input 2
-    df_y = VB;                   shape (:,164) : output
+    df_x1 = feed, DOC, material : input 1
+    df_x2 = signal data vals    : input 2
+    df_y = VB                   : output
 
-    Parameters:
-        milldat : ndarray
+    Parameters
+    ----------
+    milldat : ndarray
 
-    Returns:
-        milldat : ndarray
-        df_x1, df_x2, df_y : DataFrame object
+    Returns
+    ----------
+    milldat : ndarray
+    df_x1, df_x2, df_y : DataFrame
     '''
 
     #remove corrupt/unusable indexes
@@ -41,13 +43,13 @@ def prepData(milldat):
     df_y = pd.DataFrame()
 
     #populate df_y, df_x1, df_x2
+    dat = []
     for x in range(len(milldat)):   #y
-        dat = []
         #in VB, replace any NaN values with zeros
         if np.isnan(milldat[x][2][0][0]) == True:
             milldat[x][2][0][0] = 0
         dat.append(milldat[x][2][0][0])
-        df_y[0,x] = dat
+    df_y[0] = dat
 
     dx = 0  #index counter
     for y in range(4,7):    #x1
@@ -72,6 +74,7 @@ def prepData(milldat):
     print('Y:\n', df_y,'\n')
 
     return milldat, df_x1, df_x2, df_y
+
 
 def sensorsArray(milldat):
     '''Extract sensor readings from milldat and put them in
@@ -99,28 +102,25 @@ def sensorsArray(milldat):
     return sarray
 
 
-def train(milldat, sarray):
+def train(df_x1, df_x2, df_y):
     '''
     Feature selection and training the algorithm.
-    feats in (x): sensor data ; feats out (y): VB
 
     Parameters
     ----------
-    milldat : ndarray
-    sarray : list
+    df_x1 : DataFrame (164,3)
+    df_x2 : DataFrame (164,6)
+    df_y : Dataframe (1,164)
 
     Returns
     -------
     None.
     '''
-    #output features
     #remaining useful life => not obtainable. insufficient information.
-    X = sarray #shape=(164,6)
-    y = [0, milldat[:][2][0][0]] #VB shape=(0,164)
 
     #divide data sets into training & testing groups
-    features_train, features_test, labels_train, labels_test = train_test_split(X, y, test_size=0.1, stratify=y)
-
+    features1_train, features1_test, labels_train, labels_test = train_test_split(df_x1, df_y, test_size=0.1)
+    '''
     #prediction
     clf = krr()
     clf.fit(features_train, labels_train)
@@ -130,7 +130,7 @@ def train(milldat, sarray):
     acc = accuracy_score(pred, labels_test)
     print(acc)
     #Root mean squared error
-
+    '''
 
 
 
