@@ -22,7 +22,7 @@ def prepData(milldat):
     Find and get rid of corrupt or unusable indexes.
     df_x1 = feed, DOC, material; shape (164,:) : input 1
     df_x2 = signal data vals;    shape (164,:) : input 2
-    df_y = VB;                  shape (0,164) : output
+    df_y = VB;                   shape (:,164) : output
 
     Parameters:
         milldat : ndarray
