@@ -11,7 +11,6 @@ Credit: K.Goebel & A.Agogino
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-import sklearn.kernel_ridge as krr
 import sklearn.tree
 from sklearn.metrics import accuracy_score
 #from sklearn.pipeline import Pipeline
@@ -22,7 +21,7 @@ def prepData(milldat):
     Find and get rid of corrupt or unusable indexes.
     df_x1 = feed, DOC, material : input 1
     df_x2 = signal data vals    : input 2
-    df_y = VB                   : output
+    df_y = VB labels            : output
 
     Parameters
     ----------
@@ -42,13 +41,42 @@ def prepData(milldat):
     df_x2 = pd.DataFrame()
     df_y = pd.DataFrame()
 
+    def classify_wear_state(vb):
+        '''
+        Assigns labels to VB values based on degree of wear.
+        Classification:
+            VB				| Label
+            VB < 0.2 		: 'Good'
+            0.2 <= VB < 0.6	: 'Fair'
+            0.6 <= VB < 0.8	: 'Degraded'
+            VB >= 0.8		: 'Failed'
+        Note: The thresholds chosen for VB are just dummy values for the purpose of this project.
+
+        Parameters
+        ----------
+        vb : float
+
+        Returns
+        ----------
+        vb_label : string
+        '''
+        if vb < 0.2:
+            return 'Good'
+        elif vb < 0.6:
+            return 'Fair'
+        elif vb <0.8:
+            return 'Degraded'
+        else:
+            return 'Failed'
+
     #populate df_y, df_x1, df_x2
     dat = []
     for x in range(len(milldat)):   #y
         #in VB, replace any NaN values with zeros
         if np.isnan(milldat[x][2][0][0]) == True:
             milldat[x][2][0][0] = 0
-        dat.append(milldat[x][2][0][0])
+        vb_label = classify_wear_state(milldat[x][2][0][0])
+        dat.append(vb_label)
     df_y[0] = dat
 
     dx = 0  #index counter
@@ -110,7 +138,7 @@ def train(df_x1, df_x2, df_y):
     ----------
     df_x1 : DataFrame (164,3)
     df_x2 : DataFrame (164,6)
-    df_y : Dataframe (1,164)
+    df_y : Dataframe (164,1)
 
     Returns
     -------
@@ -119,18 +147,19 @@ def train(df_x1, df_x2, df_y):
     #remaining useful life => not obtainable. insufficient information.
 
     #divide data sets into training & testing groups
-    features1_train, features1_test, labels_train, labels_test = train_test_split(df_x1, df_y, test_size=0.1)
-    '''
-    #prediction
-    clf = krr()
-    clf.fit(features_train, labels_train)
-    pred = clf.predict(features_test)
+    feats1_train, feats1_test, labels_train, labels_test = train_test_split(df_x1, df_y, test_size=0.1)
+    feats2_train, feats2_test, labels_train, labels_test = train_test_split(df_x2, df_y, test_size=0.1)
 
-    #determine accuracy rate
-    acc = accuracy_score(pred, labels_test)
+    #prediction x1
+    clf1 =
+    clf1.fit(feats1_train, labels_train)
+    pred1 = clf1.predict(feats1_train)
+
+    #determine accuracy rate x1
+    acc = accuracy_score(pred1, labels_test)
     print(acc)
     #Root mean squared error
-    '''
+
 
 
 
