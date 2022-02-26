@@ -37,7 +37,7 @@ def plotGraph(milldat, cutNo):
 
     axs[0].set_title('Cut #'+ str(cutNo+1), fontsize='medium')
 
-    #define axses for each graph
+    #define axes for each graph
     for i in range(6):
         #x divisions: seconds == no. of readings/Hertz
         axs[i].plot(np.arange(0,len(milldat[cutNo][i+7]))/250, milldat[cutNo][i+7])
@@ -50,13 +50,11 @@ def plotGraph(milldat, cutNo):
             #if not at bottom, don't show borders
             axs[i].spines[:].set_visible(False)
             axs[i].set_xticks([])
-            axs[i].set_yticks([])
         else:
             #if at bottom, show bottom border
             axs[i].spines[['top','left','right']].set_visible(False)
             axs[i].spines['bottom'].set_visible(True)
             axs[i].set_xlabel('Time (s)', size=5)
-            axs[i].set_yticks([])
 
 
     plt.show()
