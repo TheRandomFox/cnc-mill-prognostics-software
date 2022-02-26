@@ -11,54 +11,67 @@ Credit: K.Goebel & A.Agogino
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn import feature_selection as fs
-from sklearn.pipeline import Pipeline
+import sklearn.kernel_ridge as krr
+import sklearn.tree
+from sklearn.metrics import accuracy_score
+#from sklearn.pipeline import Pipeline
 
 def prepData(milldat):
     '''
     Takes the raw data and prepares it for use.
     Find and get rid of corrupt or unusable indexes.
+    df_x1 = feed, DOC, material; shape (164,:) : input 1
+    df_x2 = signal data vals;    shape (164,:) : input 2
+    df_y = VB;                  shape (0,164) : output
 
     Parameters:
         milldat : ndarray
 
     Returns:
-        dfmill : pandas.DataFrame() object
         milldat : ndarray
+        df_x1, df_x2, df_y : DataFrame object
     '''
-    #identify fields and store label names
-    fields = milldat.dtype.names
-
-    #new Pandas dataframe
-    dfmill = pd.DataFrame()
 
     #remove corrupt/unusable indexes
     milldat = np.delete(milldat,[17,94,105],0)
 
-    #extract label data into df_mill (not sensor data)
-    #reshape table
-    #x-axis: fields; y-axis: data values
-    for y in range(7):
-        #set/reset temp container
+    #new Pandas dataframes
+    df_x1 = pd.DataFrame()
+    df_x2 = pd.DataFrame()
+    df_y = pd.DataFrame()
+
+    #populate df_y, df_x1, df_x2
+    for x in range(len(milldat)):   #y
         dat = []
+        #in VB, replace any NaN values with zeros
+        if np.isnan(milldat[x][2][0][0]) == True:
+            milldat[x][2][0][0] = 0
+        dat.append(milldat[x][2][0][0])
+        df_y[0,x] = dat
+
+    dx = 0  #index counter
+    for y in range(4,7):    #x1
+        dat = []    #reset dat
         for x in range(len(milldat)):
             dat.append(milldat[x][y][0][0])
-            #at the same time, replace any NaN values with zeros
-            if np.nan(milldat[x][y][0][0]) == True:
-                milldat[x][y][0][0] = 0
-        #make contents of dat a numpy array
-        dat = np.array(dat)
-        #insert into df_mill
-        dfmill[y] = dat
+        df_x1[dx] = dat
+        dx = dx+1
 
-    #set row & column labels
-    dfmill.index = range(len(dfmill))     #X-axis labels
-    dfmill.columns = fields[0:7]          #Y-axis labels
+    dx = 0
+    for y in range(7,13):   #x2
+        dat = []    #reset dat
+        for x in range(len(milldat)):
+            dat.append(milldat[x][y][0][0])
+        df_x2[dx] = dat
+        dx = dx+1
 
     #visualise dataframe table
-    print('Visualise dataset labels:\n', dfmill,'\n\n')
+    print('Visualise dataset labels:\n\n')
+    print('X1:\n', df_x1,'\n')
+    print('X2:\n', df_x2,'\n')
+    print('Y:\n', df_y,'\n')
 
-    return dfmill, milldat
+    return milldat, df_x1, df_x2, df_y
 
 def sensorsArray(milldat):
     '''Extract sensor readings from milldat and put them in
@@ -68,22 +81,21 @@ def sensorsArray(milldat):
         milldat : ndarray
 
     Returns:
-        sarray : list
+        sarray : ndarray
     '''
-    sarray = [['Motor current AC',
-               'Motor current DC',
-               'Vibration table',
-               'Vibration spindle',
-               'AE table',
-               'AE spindle']]
-    for mdx in range(len(milldat)):
+    datlen = len(milldat)
+    sarray = []
+    for mdx in range(datlen):
         for mdy in range(7,12):
             arr = []
-            arr.append(milldat[mdx][mdy][0][1000::])
+            arr.append(milldat[mdx][mdy][0][1001::])
             #ignore the first 1000 readings as the milling machine had not started yet
         sarray.append(arr)
     #make sure it's the right shape
-    sarray = np.reshape(sarray, (len(milldat),6))
+    print(sarray)
+    sarray = np.array(sarray)
+
+    #sarray = np.reshape(sarray, (datlen,6))
     return sarray
 
 
@@ -101,14 +113,24 @@ def train(milldat, sarray):
     -------
     None.
     '''
+    #output features
+    #remaining useful life => not obtainable. insufficient information.
+    X = sarray #shape=(164,6)
+    y = [0, milldat[:][2][0][0]] #VB shape=(0,164)
+
     #divide data sets into training & testing groups
-    #split training/testing data by index
-    fs.VarianceThreshold()
+    features_train, features_test, labels_train, labels_test = train_test_split(X, y, test_size=0.1, stratify=y)
 
-    x_train, x_test = train_test_split(() )
+    #prediction
+    clf = krr()
+    clf.fit(features_train, labels_train)
+    pred = clf.predict(features_test)
 
+    #determine accuracy rate
+    acc = accuracy_score(pred, labels_test)
+    print(acc)
+    #Root mean squared error
 
-    #feats = Pipeline( )
 
 
 
