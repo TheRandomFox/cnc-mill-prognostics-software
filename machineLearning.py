@@ -14,7 +14,7 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import AdaBoostClassifier
-import sklearn.decomposition as dcomp
+from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score
 
 def prepData(milldat):
@@ -68,68 +68,66 @@ def prepData(milldat):
         df_x1.append(dat)
     df_x1 = pd.DataFrame(data=df_x1)
 
-    #y2 (164,6(32))
-    #   Get gradient between VB vals per case.
-    #   We are ignoring first 1000 sig readings, so first 4 secs will be ignored
-    #initial dvb/dt from t,vb=0
-    dt = milldat[0][3][0]
-    dvb = milldat[0][2][0]
-    df_y2 = []
-
-    def vbt(df_y2, dvb, dt, isNewCase):
+    def vbt(dvb, dt):
         '''
-        Approximate Vb value for each sec between recordings
+        Approximate Vb gradient for each cut
 
         Parameters
         ----------
-        df_y2 : array
+        dvb : float
         dt : float
-        vb_grad : float
-        isNewCase : Boolean
 
         Returns
         -------
-        y2_new : array
-
+        vb_grad : vb
         '''
-        y2_new = []
-        vb_grad = dvb/dt
-        if isNewCase == True:
-            y2_new.append(vb_grad)
-            for s in range(1,dt):
-                t = df_y2[len(df_y2)] + vb_grad
-                y2_new.append(t)
-        else:
-            for s in range(dt):
-                t = df_y2[len(df_y2)] + vb_grad
-                y2_new.append(t)
-        return y2_new
+        vb_grad = dvb/dt     #gradient btw min/max per cut
+        return vb_grad
 
-    for x in range(1,len(milldat)):
-        if milldat[x+1][0][0] == milldat[x][0][0]:  #if next index is the same case
-            isNewCase = False
-            dt = milldat[x+1][3][0] - milldat[x][3][0]
-            dvb = milldat[x+1][2][0] - milldat[x][2][0]
+    '''
+    #y2 (164,)
+    #   VB per cut.
+    #initial dvb/dt from t,vb=0
+    df_y2 = []
+    curr_case = 0
+    dvb = 0.0
+    dt = 0
+    for x in range(len(milldat)):
+        if milldat[x][0][0][0] > curr_case:  #if new case
 
-        elif milldat[x+1][0][0] < milldat[x][0][0]: #elif next index is new case
-            isNewCase = True
-            dt = milldat[x+1][3][0]
-            dvb = milldat[x+1][2][0]
-        df_y2.concatenate( vbt(df_y2, dvb, dt, isNewCase) )
+            if x != 0:  #if not start of list, submit curr dvb and dt
+                df_y2.append(vbt(dvb, dt))
+
+            #increment case, reset dvb and dt
+            dvb = milldat[x][2][0][0]
+            dt = milldat[x][3][0][0]
+            curr_case+1
+
+        elif milldat[x][0][0][0] == curr_case: #if same case
+
+            if milldat[x][2][0][0] >= dvb:  #if x.vb is greater than current dvb
+                dvb = milldat[x][2][0][0]
+
+            dt = milldat[x][3][0][0]
+
+            if x == len(milldat)-1: #if end of list
+                df_y2.append(vbt(dvb, dt))
+                break
+    df_y2 = np.array(df_y2)
     np.delete(df_y2, range(0,4))    #del first 4 secs
+    '''
 
-
-    #x2 (164,6(32))
-    #divide into chunks of 250, pertaining to roughly 1s of readings each
+    #x2 (164,6(8))
+    #divide into chunks of 1000, pertaining to roughly 4s of readings each
     #ignore the first 1000 readings as the milling machine had not started yet
-    #T(total) = (9000-1000)/250Hz = 32s
+    #T(total) = (9000-1000)/(250Hz*4) = 8s
     df_x2 = []
     for x in range(lenmill):
         daty = []
         for y in range(7,13):
             datz = []
-            for z in range(1001,9000,250):  #z=time value
-                datz.append(milldat[x][y][z:z+250][0])
+            for z in range(1000,9000,1000):  #z=time value
+                datz = (milldat[x][y][z:z+1000][0])
             daty.append(datz)
         df_x2.append(daty)
     df_x2 = pd.DataFrame(data=df_x2)
@@ -140,7 +138,6 @@ def prepData(milldat):
     df_x2 = scaler.fit_transform(df_x2)
     #ensure Y is 1-D
     df_y1 = np.ravel(df_y1)
-    df_y2 = np.ravel(df_y2)
 
     #visualise dataframe table
     #print('Visualise dataset labels:\n\n')
@@ -148,7 +145,7 @@ def prepData(milldat):
     #print('X2:\n', df_x2,'\n')
     #print('Y:\n', df_y1,'\n')
 
-    return milldat, df_x1, df_x2, df_y1, df_y2
+    return milldat, df_x1, df_x2, df_y1
 
 
 def classifyWearState(vb):
@@ -182,7 +179,7 @@ def classifyWearState(vb):
     else:
         return 'Failed'
 
-def train(df_x1, df_x2, df_x2t, df_y1):
+def train(df_x1, df_x2, df_y1):
     '''
     Feature selection and training the algorithm.
 
@@ -191,7 +188,6 @@ def train(df_x1, df_x2, df_x2t, df_y1):
     df_x1 : DataFrame (164,3)
     df_x2 : DataFrame (164,6)
     df_y1 : Dataframe (164,)
-    xpredict : ndarray (1,9)
 
     Returns
     -------
@@ -199,21 +195,20 @@ def train(df_x1, df_x2, df_x2t, df_y1):
     '''
 
     #divide data sets into training & testing groups
-    X1_train, X1_test, y_train, y_test = train_test_split(df_x1, df_y1, test_size=0.1)
-    X2_train, X2_test, y_train, y_test = train_test_split(df_x2, df_y1, test_size=0.1)
+    X1_train, X1_test, y1_train, y1_test = train_test_split(df_x1, df_y1, test_size=0.1)
+    X2_train, X2_test, y1_train, y1_test = train_test_split(df_x2, df_y1, test_size=0.1)
 
-    #prediction x1
+    #prediction X1
     cls1 = AdaBoostClassifier(n_estimators=100)
-    cls1.fit(X1_train, y_train)
+    cls1.fit(X1_train, y1_train)
     pred1 = cls1.predict(X1_test)
 
-    #prediction x2
-
-    #clf2 = dcomp.FastICA(max_iter=200, tol=1e-3)
-    #clf2.
+    #prediction X2
+    cls2 = dcomp.FastICA(max_iter=200, tol=1e-3)
+    cls2
 
     #determine accuracy rate
-    acc1 = accuracy_score(pred1, y_test)
+    acc1 = accuracy_score(pred1, y1_test)
     print('X1 accuracy: ', round(acc1, 4))
 
     #Root mean squared error
