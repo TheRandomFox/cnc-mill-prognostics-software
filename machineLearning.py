@@ -154,9 +154,10 @@ def classifyWearState(vb):
     The thresholds chosen for VB are just dummy values for the purpose of this project.
     Classification:
         VB value		| Label
-        VB < 0.4 		: 'Good'
-        0.4 <= VB < 0.8 : 'Degraded'
-        VB >= 0.8		: 'Failed'
+        VB < 0.2 		: 'Good' (1)
+        0.2 >= VB < 0.5 : 'Fair' (2)
+        0.5 <= VB < 0.8 : 'Degraded' (3)
+        VB >= 0.8		: 'Failed' (4)
 
     Parameters
     ----------
@@ -166,12 +167,14 @@ def classifyWearState(vb):
     ----------
     yclass : int
     '''
-    if vb < 0.4:
+    if vb < 0.2:
         return '1'
-    elif vb < 0.8:
+    elif vb < 0.5:
         return '2'
-    else:
+    elif vb < 0.8:
         return '3'
+    else:
+        return '4'
 
 def train(df_x1, df_x2, df_y1):
     '''
@@ -187,6 +190,7 @@ def train(df_x1, df_x2, df_y1):
     -------
     None.
     '''
+    print('Training algorithms...\n')
 
     #divide data sets into training & testing groups
     X1_train, X1_test, y1_train, y1_test = train_test_split(df_x1, df_y1, test_size=0.1)

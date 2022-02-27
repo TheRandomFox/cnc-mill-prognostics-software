@@ -57,10 +57,11 @@ Note:
 
 ##############################
 Classification:
-VB				| Label
-VB < 0.4 		: 'Good'
-0.4 <= VB < 0.8	: 'Degraded'
-VB >= 0.8		: 'Failed'
+VB value		| Label
+VB < 0.2 		: 'Good' (1)
+0.2 >= VB < 0.5 : 'Fair' (2)
+0.5 <= VB < 0.8 : 'Degraded' (3)
+VB >= 0.8		: 'Failed' (4)
 
 Note:
 	The thresholds chosen for VB are just dummy values for the purpose of this project.
