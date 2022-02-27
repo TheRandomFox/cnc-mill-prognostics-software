@@ -56,7 +56,8 @@ def prepData(milldat):
     #y (164,1)
     dat = []
     for x in range(lenmill):
-        dat.append(milldat[x][2][0][0])
+        yclass = classifyWearState(milldat[x][2][0][0])
+        dat.append(yclass)
     df_y = pd.DataFrame(data=dat)
 
     #x1 (164,3)
@@ -83,7 +84,8 @@ def prepData(milldat):
     scaler = StandardScaler()
     df_x1 = scaler.fit_transform(df_x1)
     df_x2 = scaler.fit_transform(df_x2)
-    df_y = scaler.fit_transform(df_y)
+    #ensure Y is 1-D
+    df_y = np.ravel(df_y)
 
     #visualise dataframe table
     #print('Visualise dataset labels:\n\n')
@@ -148,13 +150,13 @@ def train(df_x1, df_x2, df_y):
     reg1 = AdaBoostRegressor()
     reg1.fit(X1_train, y_train)
     pred1 = reg1.predict(X1_test)
-
+    print(pred1)
     #prediction x2
     #clf2 = dcomp.FastICA(max_iter=200, tol=1e-3)
     #clf2.
 
     #determine accuracy rate
-    acc1 = reg1.score(pred1, y_test)
+    acc1 = reg1.score(y_test, pred1)
     print('X1 accuracy: ', round(acc1, 4))
 
     #Root mean squared error
