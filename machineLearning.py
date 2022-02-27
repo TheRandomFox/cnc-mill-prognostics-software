@@ -13,7 +13,7 @@ import pandas as pd
 
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
-from sklearn.ensemble import AdaBoostRegressor
+from sklearn.ensemble import AdaBoostClassifier
 import sklearn.decomposition as dcomp
 from sklearn.metrics import accuracy_score
 #import sklearn.pipeline.Pipeline as pipe
@@ -70,6 +70,8 @@ def prepData(milldat):
     df_x1 = pd.DataFrame(data=df_x1)
 
     #x2 (164,6)
+    #divide into chunks of 250, pertaining to roughly 1s of readings each
+    #T(total) = (9000-1000)/250Hz = 32s
     df_x2 = []
     for x in range(lenmill):
         dat = []
@@ -80,7 +82,7 @@ def prepData(milldat):
     df_x2 = pd.DataFrame(data=df_x2)
 
 
-    #Perform scaling by Standardization
+    #Perform scaling by Standardization on X feats
     scaler = StandardScaler()
     df_x1 = scaler.fit_transform(df_x1)
     df_x2 = scaler.fit_transform(df_x2)
@@ -89,9 +91,9 @@ def prepData(milldat):
 
     #visualise dataframe table
     #print('Visualise dataset labels:\n\n')
-    print('X1:\n', df_x1,'\n')
-    print('X2:\n', df_x2,'\n')
-    print('Y:\n', df_y,'\n')
+    #print('X1:\n', df_x1,'\n')
+    #print('X2:\n', df_x2,'\n')
+    #print('Y:\n', df_y,'\n')
 
     return milldat, df_x1, df_x2, df_y
 
@@ -113,7 +115,7 @@ def classifyWearState(vb):
 
     Returns
     ----------
-    vb_label : string
+    yclass : string
     '''
     if vb < 0.2:
         return 'Good'
@@ -134,7 +136,7 @@ def train(df_x1, df_x2, df_y):
     ----------
     df_x1 : DataFrame (164,3)
     df_x2 : DataFrame (164,6)
-    df_y : Dataframe (164,1)
+    df_y : Dataframe (164,)
     xpredict : ndarray (1,9)
 
     Returns
@@ -147,16 +149,15 @@ def train(df_x1, df_x2, df_y):
     X2_train, X2_test, y_train, y_test = train_test_split(df_x2, df_y, test_size=0.1)
 
     #prediction x1
-    reg1 = AdaBoostRegressor()
-    reg1.fit(X1_train, y_train)
-    pred1 = reg1.predict(X1_test)
-    print(pred1)
+    cls1 = AdaBoostClassifier(n_estimators=100)
+    cls1.fit(X1_train, y_train)
+    pred1 = cls1.predict(X1_test)
     #prediction x2
     #clf2 = dcomp.FastICA(max_iter=200, tol=1e-3)
     #clf2.
 
     #determine accuracy rate
-    acc1 = reg1.score(y_test, pred1)
+    acc1 = accuracy_score(pred1, y_test)
     print('X1 accuracy: ', round(acc1, 4))
 
     #Root mean squared error
