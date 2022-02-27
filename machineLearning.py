@@ -164,14 +164,14 @@ def classifyWearState(vb):
 
     Returns
     ----------
-    yclass : string
+    yclass : int
     '''
     if vb < 0.4:
-        return 'Good'
+        return '1'
     elif vb < 0.8:
-        return 'Degraded'
+        return '2'
     else:
-        return 'Failed'
+        return '3'
 
 def train(df_x1, df_x2, df_y1):
     '''
@@ -193,17 +193,26 @@ def train(df_x1, df_x2, df_y1):
     X2_train, X2_test, y1_train, y1_test = train_test_split(df_x2, df_y1, test_size=0.1)
 
     #prediction X1
-    cls1 = AdaBoostClassifier(n_estimators=100)
+    cls1 = SVC(C=0.5, kernel='poly')
     cls1.fit(X1_train, y1_train)
     pred1 = cls1.predict(X1_test)
 
     #prediction X2
-    cls2 = dcomp.FastICA(max_iter=200, tol=1e-3)
-    cls2
+    cls2 = AdaBoostClassifier(n_estimators=100)
+    cls2.fit(X2_train, y1_train)
+    pred2 = cls2.predict(X2_test)
+
+    #prediction combined
+    #pred_comb = np.stack((pred1,pred2), axis=1)
 
     #determine accuracy rate
     acc1 = accuracy_score(pred1, y1_test)
-    print('X1 accuracy: ', round(acc1, 4))
+    acc2 = accuracy_score(pred2, y1_test)
+    #acc_comb = accuracy_score(pred_comb, y1_test)
 
-    #Root mean squared error
+    print('X1 accuracy: ', round(acc1, 4), ' X1 shape: ', pred1.shape)
+    print('X2 accuracy: ', round(acc2, 4), ' X2 shape: ', pred2.shape)
+    #print('Combined accuracy: ', round(acc_comb, 4), ' X_comb shape: ', pred_comb.shape)
+    print('Predict X1: ', pred1, '\nPredict X2: ', pred2)
+    print('True: ', y1_test)
 
