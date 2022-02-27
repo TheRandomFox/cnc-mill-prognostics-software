@@ -28,17 +28,20 @@ print('Data file loaded successfully.\n\n')
 isRunning = 1
 
 #Prepare data : create dataframes, remove unusable indexes from milldat
-milldat, df_x1, df_x2, df_y = ml.prepData(milldat)
+print('Prepping data...\n')
+milldat, df_x1, df_x2, df_x2t, df_y = ml.prepData(milldat)
 
-predict = ml.train(df_x1,df_x2,df_y)
+print('Training algorithms...\n')
+predict = ml.train(df_x1, df_x2, df_x2t, df_y)
+
+print('Done.\n\n')
 #Main program loop
 '''
 while isRunning == 1:
     #main menu
     print('========================================\n'
           'To view sample data from 1 cut, enter "1"\n'
-          'To show prediction accuracy result, enter "2"\n'
-          ''
+          'To show prediction attempt, enter "2"\n'
           'To exit program, enter "exit"\n'
           '========================================\n')
     cmd = str.lower(input())
