@@ -154,10 +154,8 @@ def classifyWearState(vb):
     The thresholds chosen for VB are just dummy values for the purpose of this project.
     Classification:
         VB value		| Label
-        VB < 0.2 		: 'Good'
-        0.2 <= VB < 0.4	: 'Fair'
-        0.4 <= VB < 0.6 : 'Degraded'
-        0.6 <= VB < 0.8	: 'Critical'
+        VB < 0.4 		: 'Good'
+        0.4 <= VB < 0.8 : 'Degraded'
         VB >= 0.8		: 'Failed'
 
     Parameters
@@ -168,14 +166,10 @@ def classifyWearState(vb):
     ----------
     yclass : string
     '''
-    if vb < 0.2:
+    if vb < 0.4:
         return 'Good'
-    elif vb < 0.4:
-        return 'Fair'
-    elif vb < 0.6:
-        return 'Degraded'
     elif vb < 0.8:
-        return 'Critical'
+        return 'Degraded'
     else:
         return 'Failed'
 
