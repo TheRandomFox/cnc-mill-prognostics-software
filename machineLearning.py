@@ -168,13 +168,13 @@ def classifyWearState(vb):
     yclass : int
     '''
     if vb < 0.2:
-        return '1'
+        return 1
     elif vb < 0.5:
-        return '2'
+        return 2
     elif vb < 0.8:
-        return '3'
+        return 3
     else:
-        return '4'
+        return 4
 
 def train(df_x1, df_x2, df_y1):
     '''
@@ -214,8 +214,8 @@ def train(df_x1, df_x2, df_y1):
     acc2 = accuracy_score(pred2, y1_test)
     #acc_comb = accuracy_score(pred_comb, y1_test)
 
-    print('X1 accuracy: ', round(acc1, 4), ' X1 shape: ', pred1.shape)
-    print('X2 accuracy: ', round(acc2, 4), ' X2 shape: ', pred2.shape)
+    print('X1 accuracy: ', round(acc1*100, 4), '%')
+    print('X2 accuracy: ', round(acc2*100, 4), '%')
     #print('Combined accuracy: ', round(acc_comb, 4), ' X_comb shape: ', pred_comb.shape)
     print('Predict X1: ', pred1, '\nPredict X2: ', pred2)
     print('True: ', y1_test)
