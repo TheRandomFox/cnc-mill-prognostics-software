@@ -71,16 +71,18 @@ def prepData(milldat):
 
     #x2 (164,6)
     #divide into chunks of 250, pertaining to roughly 1s of readings each
+    #ignore the first 1000 readings as the milling machine had not started yet
     #T(total) = (9000-1000)/250Hz = 32s
     df_x2 = []
     for x in range(lenmill):
-        dat = []
+        daty = []
         for y in range(7,13):
-            #ignore the first 1000 readings as the milling machine had not started yet
-            dat.append(milldat[x][y][1001::][0])
-        df_x2.append(dat)
+            datz = []
+            for z in range(1001,9000,250):  #z=time value
+                datz.append(milldat[x][y][z:z+250][0])
+            daty.append(datz)
+        df_x2.append(daty)
     df_x2 = pd.DataFrame(data=df_x2)
-
 
     #Perform scaling by Standardization on X feats
     scaler = StandardScaler()
@@ -128,7 +130,7 @@ def classifyWearState(vb):
     else:
         return 'Failed'
 
-def train(df_x1, df_x2, df_y):
+def train(df_x1, df_x2, df_x2t, df_y):
     '''
     Feature selection and training the algorithm.
 
@@ -152,7 +154,9 @@ def train(df_x1, df_x2, df_y):
     cls1 = AdaBoostClassifier(n_estimators=100)
     cls1.fit(X1_train, y_train)
     pred1 = cls1.predict(X1_test)
+
     #prediction x2
+
     #clf2 = dcomp.FastICA(max_iter=200, tol=1e-3)
     #clf2.
 
