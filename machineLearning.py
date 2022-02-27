@@ -52,6 +52,13 @@ def prepData(milldat):
         milldat[xnan[i]][2][0][0] = vbmean
 
     #populate df_x1, df_x2, df_y1, df_y2
+    #y1 (164,)
+    dat = []
+    for x in range(lenmill):
+        yclass = classifyWearState(milldat[x][2][0][0])
+        dat.append(yclass)
+    df_y1 = pd.DataFrame(data=dat)
+
     #x1 (164,3)
     df_x1 = []
     for x in range(lenmill):
@@ -61,7 +68,58 @@ def prepData(milldat):
         df_x1.append(dat)
     df_x1 = pd.DataFrame(data=df_x1)
 
-    #x2 (164,6)
+    #y2 (164,6(32))
+    #   Get gradient between VB vals per case.
+    #   We are ignoring first 1000 sig readings, so first 4 secs will be ignored
+    #initial dvb/dt from t,vb=0
+    dt = milldat[0][3][0]
+    dvb = milldat[0][2][0]
+    df_y2 = []
+
+    def vbt(df_y2, dvb, dt, isNewCase):
+        '''
+        Approximate Vb value for each sec between recordings
+
+        Parameters
+        ----------
+        df_y2 : array
+        dt : float
+        vb_grad : float
+        isNewCase : Boolean
+
+        Returns
+        -------
+        df_y2 : array
+
+        '''
+        vb_grad = dvb/dt
+        if isNewCase == True:
+            df_y2.append(vb_grad)
+            for s in range(1,dt):
+                t = df_y2[len(df_y2)] + vb_grad
+                df_y2.append(t)
+        else:
+            for s in range(dt):
+                t = df_y2[len(df_y2)] + vb_grad
+                df_y2.append(t)
+        return df_y2
+
+    for x in range(1,len(milldat)):
+        if milldat[x+1][0][0] == milldat[x][0][0]:  #if next index is the same case
+            isNewCase = False
+            dt = milldat[x+1][3][0] - milldat[x][3][0]
+            dvb = milldat[x+1][2][0] - milldat[x][2][0]
+
+        elif milldat[x+1][0][0] < milldat[x][0][0]: #elif next index is new case
+            isNewCase = True
+            dt = milldat[x+1][3][0]
+            dvb = milldat[x+1][2][0]
+        df_y2 = vbt(df_y2, dvb, dt, isNewCase)
+
+    return np.ravel(df_y2)
+
+
+    #x2 (164,6(32))
     #divide into chunks of 250, pertaining to roughly 1s of readings each
     #ignore the first 1000 readings as the milling machine had not started yet
     #T(total) = (9000-1000)/250Hz = 32s
@@ -75,19 +133,6 @@ def prepData(milldat):
             daty.append(datz)
         df_x2.append(daty)
     df_x2 = pd.DataFrame(data=df_x2)
-
-    #y1 (164,)
-    dat = []
-    for x in range(lenmill):
-        yclass = classifyWearState(milldat[x][2][0][0])
-        dat.append(yclass)
-    df_y1 = pd.DataFrame(data=dat)
-
-    #y2 (164,)
-    #Get gradient between VB vals per case.
-    #Approximate Vb value for each sec between recordings
-    #We are ignoring first 1000 sig readings, so first 4 secs will be ignored
-
 
     #Perform scaling by Standardization on X feats
     scaler = StandardScaler()
@@ -103,40 +148,6 @@ def prepData(milldat):
     #print('Y:\n', df_y1,'\n')
 
     return milldat, df_x1, df_x2, df_y1
-
-def dVB_dT(milldat):
-    '''
-    Attempts to find the avg VB slope between each reading.
-
-    Parameters
-    ----------
-    milldat : ndarray
-
-    Returns
-    ----------
-    dVB_dx : ndarray (164,)
-    '''
-    dVB_dx = []
-    #initial dvb/dt from t,vb=0
-    dt = milldat[0][3][0]
-    dvb = milldat[0][2][0]
-    dVB_dx.append(dvb/dt)
-    for x in range(1,len(milldat)):
-        #if end of array
-        if x == len(milldat)-1:
-            break
-        #elif next index is the same case
-        elif milldat[x+1][0][0] == milldat[x][0][0]:
-            dt = milldat[x+1][3][0] - milldat[x][3][0]
-            dvb = milldat[x+1][2][0] - milldat[x][2][0]
-            dVB_dx.append(dvb/dt)
-        #elif next index is new case
-        elif milldat[x+1][0][0] < milldat[x][0][0]:
-            dt = milldat[x+1][3][0]
-            dvb = milldat[x+1][2][0]
-            dVB_dx.append(dvb/dt)
-
-    return np.ravel(dVB_dx)
 
 
 def classifyWearState(vb):
