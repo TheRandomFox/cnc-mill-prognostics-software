@@ -89,20 +89,21 @@ def prepData(milldat):
 
         Returns
         -------
-        df_y2 : array
+        y2_new : array
 
         '''
+        y2_new = []
         vb_grad = dvb/dt
         if isNewCase == True:
-            df_y2.append(vb_grad)
+            y2_new.append(vb_grad)
             for s in range(1,dt):
                 t = df_y2[len(df_y2)] + vb_grad
-                df_y2.append(t)
+                y2_new.append(t)
         else:
             for s in range(dt):
                 t = df_y2[len(df_y2)] + vb_grad
-                df_y2.append(t)
-        return df_y2
+                y2_new.append(t)
+        return y2_new
 
     for x in range(1,len(milldat)):
         if milldat[x+1][0][0] == milldat[x][0][0]:  #if next index is the same case
@@ -114,9 +115,8 @@ def prepData(milldat):
             isNewCase = True
             dt = milldat[x+1][3][0]
             dvb = milldat[x+1][2][0]
-        df_y2 = vbt(df_y2, dvb, dt, isNewCase)
-
-    return np.ravel(df_y2)
+        df_y2.concatenate( vbt(df_y2, dvb, dt, isNewCase) )
+    np.delete(df_y2, range(0,4))    #del first 4 secs
 
 
     #x2 (164,6(32))
@@ -140,6 +140,7 @@ def prepData(milldat):
     df_x2 = scaler.fit_transform(df_x2)
     #ensure Y is 1-D
     df_y1 = np.ravel(df_y1)
+    df_y2 = np.ravel(df_y2)
 
     #visualise dataframe table
     #print('Visualise dataset labels:\n\n')
@@ -147,7 +148,7 @@ def prepData(milldat):
     #print('X2:\n', df_x2,'\n')
     #print('Y:\n', df_y1,'\n')
 
-    return milldat, df_x1, df_x2, df_y1
+    return milldat, df_x1, df_x2, df_y1, df_y2
 
 
 def classifyWearState(vb):
