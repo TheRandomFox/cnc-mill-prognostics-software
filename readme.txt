@@ -62,6 +62,7 @@ VB < 0.4 		: 'Good'
 0.4 <= VB < 0.8	: 'Degraded'
 VB >= 0.8		: 'Failed'
 
-Note: The thresholds chosen for VB are just dummy values for the purpose of this project.
-
+Note:
+	The thresholds chosen for VB are just dummy values for the purpose of this project.
+	Because of the relatively low n-value of this dataset, accuracy is expected to be moderately poor.
 ##############################
