@@ -31,12 +31,8 @@ isRunning = 1
 print('Prepping data...\n')
 milldat, df_x1, df_x2, df_y1 = ml.prepData(milldat)
 
-print('Training algorithms...\n')
-predict = ml.train(df_x1, df_x2, df_y1)
-
 print('Done.\n\n')
 #Main program loop
-'''
 while isRunning == 1:
     #main menu
     print('========================================\n'
@@ -50,7 +46,7 @@ while isRunning == 1:
         pl.plotGraph(milldat,cutNo)
     elif cmd == '2':
         #prediction
-        predict = ml.train(milldat,sarray)
+        predict = ml.train(df_x1, df_x2, df_y1)
     elif cmd == 'exit':
         ans = str.lower(input('Are you sure you want to close the program? (Y/N) '))
         if ans == 'n':
@@ -62,4 +58,3 @@ while isRunning == 1:
             print('Invalid input.\n\n')
     else:
         print('Invalid input.\n\n')
-'''
