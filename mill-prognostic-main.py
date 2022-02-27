@@ -29,10 +29,10 @@ isRunning = 1
 
 #Prepare data : create dataframes, remove unusable indexes from milldat
 print('Prepping data...\n')
-milldat, df_x1, df_x2, df_y1, df_y2 = ml.prepData(milldat)
+milldat, df_x1, df_x2, df_y1 = ml.prepData(milldat)
 
 print('Training algorithms...\n')
-predict = ml.train(df_x1, df_x2, df_y1, df_y2)
+predict = ml.train(df_x1, df_x2, df_y1)
 
 print('Done.\n\n')
 #Main program loop
