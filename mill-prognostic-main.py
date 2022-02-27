@@ -42,7 +42,8 @@ while isRunning == 1:
           '========================================\n')
     cmd = str.lower(input())
     if cmd == '1':
-        cutNo = int(input('\nView which cut? (1-',len(milldat),'): '))-1
+        print('\nView which cut? (1-',len(milldat),'):\n')
+        cutNo = int(input())-1
         pl.plotGraph(milldat,cutNo)
     elif cmd == '2':
         #prediction
