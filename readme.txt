@@ -33,7 +33,7 @@ Milldat structure
 milldat[x][y][z][0]:
 x = experiment index, len==167 (each case measured multiple times as duration progresses)
 y = field index, len==13
-z = sensor data index for y=7:12, len==9000; for y=0:6, len==1
+z = sensor data index for y==7:12, len==9000; for y==0:6, len==1
 [0] = for some reason each individual value in each list is in a (1,) array; Must use a 4th dimension to extract the values.
 
 field legend:
@@ -59,8 +59,8 @@ Note:
 Classification:
 VB value		| Label
 VB < 0.2 		: 'Good' (1)
-0.2 >= VB < 0.5 : 'Fair' (2)
-0.5 <= VB < 0.8 : 'Degraded' (3)
+0.2 >= VB < 0.5	: 'Fair' (2)
+0.5 >= VB < 0.8	: 'Degraded' (3)
 VB >= 0.8		: 'Failed' (4)
 
 Note:
